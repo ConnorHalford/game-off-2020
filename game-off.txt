@@ -1,0 +1,50 @@
+
+=== SPACE VALET
+Billionaires have colonized, commercialized and privatized the moon. You're only shot at getting to go up there is to work your same crappy job as a valet, but _in space_, which is much cooler. It'll be worth it. Definitely.
+
+=== GAMEPLAY
+- You are a character running around on the moon
+- You can enter and exit spacecraft and fly them around in 2D above the ground (can't go upwards), they are basically 'space cars'
+- Spacecraft have a health meter which goes down if you crash them into the environment or other vehicles
+- NPCs arrive in a spacecraft and wait for you to come and take the keys, then go into a building
+- You need to find a place to park the spacecraft without damaging it, so that more guests can arrive
+- Guests also start exiting the building after a while, and will request their vehicle back
+- You need to retrieve the right vehicle and drive it back to them, if correct they will drive off
+
+=== ASSETS
+Player character and NPCs will be the iconic little 2D aliens from the KGA1 Platformer packs
+- kenney-game-assets-1\2D assets\Platformer Assets Base
+- kenney-game-assets-1\2D assets\Platformer Assets Extra Animations & Enemies
+
+Environment and ships from the KGA3 Space Kit, using Asset Forge
+- kenney-game-assets-3\3D assets\Space Kit
+
+Could potentially make use of the KGA3 Emote pack for NPC status
+- kenney-game-assets-3\2D assets\Emote Pack
+
+Use the KGA1 UI Space Pack for menus, with KGA3 Fonts for text rendering
+- kenney-game-assets-1\2D assets\UI Space Pack
+- kenney-game-assets-3\Fonts
+
+KGA3 Particle Pack for visual effects
+- kenney-game-assets-3\2D assets\Particle Pack
+
+KGA3 Pattern Pack for additional tiling textures
+- kenney-game-assets-3\2D assets\Pattern Pack
+
+Audio from KGA3 Sci-Fi Sounds pack
+- kenney-game-assets-3\Audio\Sci-Fi Sounds
+
+=== TODO
+- Mockup environment
+- Character running around without animation
+- Spacecraft enter/drive/exit, probably want a few different feel configurations for different vehicles
+- Spacecraft animations (tilt to turn/thrust/brake)
+- Inverted hull outline so you know which spacecraft you're interacting with, always wanted to try this
+- Character animation
+- NPC arrival/departure
+- Spacecraft damage
+- Particle effects
+- Sound effects
+- Music
+- Main menu
