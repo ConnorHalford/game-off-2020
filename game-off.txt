@@ -32,8 +32,9 @@ KGA3 Particle Pack for visual effects
 KGA3 Pattern Pack for additional tiling textures
 - kenney-game-assets-3\2D assets\Pattern Pack
 
-Audio from KGA3 Sci-Fi Sounds pack
+Audio from KGA3 Sci-Fi Sounds pack and Interface Sounds pack
 - kenney-game-assets-3\Audio\Sci-Fi Sounds
+- kenney-game-assets-3\Audio\Interface Sounds
 
 === TODO
 - Mockup environment
