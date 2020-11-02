@@ -4,7 +4,7 @@ My entry for the [GitHub Game Off 2020](https://itch.io/jam/game-off-2020) game 
 # Licenses
 The source code and custom assets for this project are provided under the [MIT license](https://github.com/ConnorHalford/game-off-2020/blob/main/LICENSE).
 
-The following asset packs are included with this project. They were created by [Kenney](www.kenney.nl) and provided under the [Creative Commons Zero](http://creativecommons.org/publicdomain/zero/1.0/) (CC0 1.0 Universal) license. You can [donate](https://kenney.itch.io/) to support Kenney in creating more public domain game assets.
+The following asset packs are included with this project. They were created by [Kenney](https://kenney.nl/) and provided under the [Creative Commons Zero](http://creativecommons.org/publicdomain/zero/1.0/) (CC0 1.0 Universal) license. You can [donate](https://kenney.itch.io/) to support Kenney in creating more public domain game assets.
 - [Kenney Game Assets 1](https://kenney.itch.io/kenney-game-assets-1)
   - Platformer Assets Base and Platformer Assets Extra Animations & Enemies, parts of [Platformer Art Deluxe](https://kenney.nl/assets/platformer-art-deluxe)
   - [UI Pack](https://kenney.nl/assets/ui-pack)
