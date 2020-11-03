@@ -28,3 +28,5 @@ This project was created using Unity 2020.1. It depends on the following Unity p
 - [Timeline](https://docs.unity3d.com/Packages/com.unity.timeline@1.3/manual/index.html)
 - [Unity UI](https://docs.unity3d.com/Packages/com.unity.ugui@1.0/manual/index.html)
 - [Visual Studio Code Editor](https://docs.unity3d.com/Packages/com.unity.ide.vscode@1.2/manual/index.html), which is available under the [MIT license](https://docs.unity3d.com/Packages/com.unity.ide.vscode@1.2/license/LICENSE.html).
+
+The assets in the Standard Assets folder are from Unity's [Standard Assets](https://assetstore.unity.com/packages/essentials/asset-packs/standard-assets-for-unity-2018-4-32351) package. They are freely available for use in any project.
