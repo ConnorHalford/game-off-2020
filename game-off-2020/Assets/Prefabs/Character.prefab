@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fc0c5d0fb01e21428475dafe3174f0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _follow: {fileID: 3487780341076939756}
+  _follow: {fileID: 2168569663816543710}
   _height: 2
   _xOffset: 0.1
   _zOffset: 0.1

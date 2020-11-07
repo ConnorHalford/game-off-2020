@@ -15,13 +15,15 @@ public class Player : MonoBehaviour
 
 	[Header("Anim")]
 	[SerializeField] private float _raycastHeightOffset = 1.0f;
-	[SerializeField] private float _heightAboveGround = 0.2f;
+	[SerializeField] private float _heightConsideredGrounded = 0.2f;
 	[SerializeField] private float _idleThreshold = 0.1f;
 	[SerializeField] private float _spriteFlipThreshold = 0.01f;
+	[SerializeField] private bool _spriteJumpsInScreenSpace = false;
 
 	private Camera _camera = null;
 	private Rigidbody _rb = null;
 	private CapsuleCollider _collider = null;
+	private Plane _groundPlane = new Plane(Vector3.up, Vector3.zero);
 
 	private Controls _controls = null;
 	private Vector2 _moveInput = Vector2.zero;
@@ -76,13 +78,31 @@ public class Player : MonoBehaviour
 		MoveHorizontal();
 
 		// Grounded check
-		if (Physics.Raycast(transform.position + _raycastHeightOffset * Vector3.up, Vector3.down,
-			out RaycastHit hit, float.MaxValue, _maskEnvironment))
+		float heightAboveGround = transform.position.y;
+		Vector3 basePosition = transform.position;
+		Ray ray = new Ray(transform.position + _raycastHeightOffset * Vector3.up, Vector3.down);
+		if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, _maskEnvironment))
 		{
-			if (hit.distance < _raycastHeightOffset + _heightAboveGround)
+			if (hit.distance < _raycastHeightOffset + _heightConsideredGrounded)
 			{
 				_timeLastGrounded = Time.time;
 			}
+			heightAboveGround = hit.distance - _raycastHeightOffset;
+			basePosition = hit.point;
+		}
+		else if (_groundPlane.Raycast(ray, out heightAboveGround))
+		{
+			basePosition = ray.origin + heightAboveGround * ray.direction;
+			heightAboveGround -= _raycastHeightOffset;
+			_timeLastGrounded = Time.time;
+		}
+		if (_spriteJumpsInScreenSpace)
+		{
+			_sprite.transform.position = basePosition + heightAboveGround * _sprite.transform.up;
+		}
+		else
+		{
+			_sprite.transform.position = transform.position;
 		}
 
 		// Prevent falling out of the world
@@ -114,14 +134,13 @@ public class Player : MonoBehaviour
 	{
 		// We want 'forward' and 'backward' to be up and down the screen, but since it's a perspective
 		// camera we have to create a screenspace up vector then project it onto a flat plane
-		Plane ground = new Plane(Vector3.up, transform.position);
 		Vector3 screenPos = _camera.WorldToScreenPoint(transform.position);
 		Ray ray = _camera.ScreenPointToRay(screenPos);
-		ground.Raycast(ray, out float entryDistance);
+		_groundPlane.Raycast(ray, out float entryDistance);
 		Vector3 posA = ray.origin + entryDistance * ray.direction;
 
 		ray = _camera.ScreenPointToRay(screenPos + Vector3.up);		// Screenspace up vector
-		ground.Raycast(ray, out entryDistance);
+		_groundPlane.Raycast(ray, out entryDistance);
 		Vector3 posB = ray.origin + entryDistance * ray.direction;
 
 		Vector3 forward = (posB - posA).normalized;		// Screenspace up vector projected to world space

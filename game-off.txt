@@ -15,7 +15,6 @@ Billionaires have colonized, commercialized and privatized the moon. You're only
 - Spacecraft enter/drive/exit, probably want a few different feel configurations for different vehicles
 - Spacecraft animations (tilt to turn/thrust/brake)
 - Inverted hull outline so you know which spacecraft you're interacting with, always wanted to try this
-- Character animation
 - NPC arrival/departure
 - Spacecraft damage
 - Particle effects
