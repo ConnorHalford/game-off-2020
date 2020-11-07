@@ -47,8 +47,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sprite: {fileID: 2674641788685194460}
+  _anim: {fileID: 421110420581115432}
   _moveForce: 60
   _maxHorizontalSpeed: 10
+  _jumpForce: 15
+  _raycastHeightOffset: 1
+  _heightAboveGround: 0.2
+  _idleThreshold: 0.1
 --- !u!136 &2945493508620789527
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -141,6 +146,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2168569663816543710, guid: db5c006b393b8b443823e809ad6fb12c, type: 3}
   m_PrefabInstance: {fileID: 8101719460919840030}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &421110420581115432 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8482252127787084598, guid: db5c006b393b8b443823e809ad6fb12c, type: 3}
+  m_PrefabInstance: {fileID: 8101719460919840030}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9ffce6646b0a9b4c811e89aa679928d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &2674641788685194460 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 6156748783066552770, guid: db5c006b393b8b443823e809ad6fb12c, type: 3}

@@ -7,11 +7,11 @@ public class BlobShadow : MonoBehaviour
 	[SerializeField] private float _xOffset = 0.0f;
 	[SerializeField] private float _zOffset = 0.0f;
 
-	private static int _layerMask = 0;
+	private static int _maskEnvironment = 0;
 
 	private void Awake()
 	{
-		_layerMask = LayerMask.GetMask("Environment");
+		_maskEnvironment = LayerMask.GetMask("Environment");
 	}
 
 	private void LateUpdate()
@@ -22,7 +22,7 @@ public class BlobShadow : MonoBehaviour
 		}
 
 		float y = _height;
-		if (Physics.Raycast(_follow.position + _height * Vector3.up, Vector3.down, out RaycastHit hit, float.PositiveInfinity, _layerMask))
+		if (Physics.Raycast(_follow.position + _height * Vector3.up, Vector3.down, out RaycastHit hit, float.PositiveInfinity, _maskEnvironment))
 		{
 			y = hit.point.y + _height;
 		}

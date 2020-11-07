@@ -4,28 +4,50 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
 	[SerializeField] private SpriteRenderer _sprite = null;
+	[SerializeField] private CharacterAnimator _anim = null;
+
+	[Header("Movement")]
 	[SerializeField] private float _moveForce = 30.0f;
 	[SerializeField] private float _maxHorizontalSpeed = 10.0f;
+	[SerializeField] private float _jumpForce = 60.0f;
+	[SerializeField] private float _jumpGracePeriod = 0.1f;
+	[SerializeField] private float _timeBetweenJumps = 0.1f;
 
-	private Controls _controls = null;
-	private Vector2 _moveInput = Vector2.zero;
+	[Header("Anim")]
+	[SerializeField] private float _raycastHeightOffset = 1.0f;
+	[SerializeField] private float _heightAboveGround = 0.2f;
+	[SerializeField] private float _idleThreshold = 0.1f;
+
 	private Camera _camera = null;
 	private Rigidbody _rb = null;
 	private CapsuleCollider _collider = null;
 
-	private int _layerMask = 0;
+	private Controls _controls = null;
+	private Vector2 _moveInput = Vector2.zero;
+	private float _timeLastGrounded = 0.0f;
+	private float _timeLastJumped = 0.0f;
+	private float _timeLastPressedJump = 0.0f;
+
+	private int _maskEnvironment = 0;
 
 	private void Awake()
 	{
+		Application.targetFrameRate = 60;
+
 		_controls = new Controls();
 		_rb = GetComponent<Rigidbody>();
 		_collider = GetComponent<CapsuleCollider>();
-		_layerMask = LayerMask.GetMask("Environment");
+		_maskEnvironment = LayerMask.GetMask("Environment");
 	}
 
 	private void OnEnable()
 	{
 		_controls.Character.Enable();
+		_sprite.flipX = false;
+		_anim.PlayIdle();
+		_timeLastGrounded = Time.time;
+		_timeLastJumped = 0.0f;
+		_timeLastPressedJump = 0.0f;
 	}
 
 	private void OnDisable()
@@ -36,6 +58,10 @@ public class Player : MonoBehaviour
 	private void Update()
 	{
 		_moveInput = _controls.Character.Movement.ReadValue<Vector2>();
+		if (_controls.Character.Jump.triggered)
+		{
+			_timeLastPressedJump = Time.time;
+		}
 	}
 
 	private void FixedUpdate()
@@ -45,16 +71,41 @@ public class Player : MonoBehaviour
 			_camera = Camera.main;
 		}
 
+		// Move
 		MoveHorizontal();
 
-
+		// Grounded check
+		if (Physics.Raycast(transform.position + _raycastHeightOffset * Vector3.up, Vector3.down, out RaycastHit hit, 100.0f, _maskEnvironment))
+		{
+			if (hit.distance < _raycastHeightOffset + _heightAboveGround)
+			{
+				_timeLastGrounded = Time.time;
+			}
+		}
 
 		// Prevent falling out of the world
 		if (_rb.position.y < 0.0f)
 		{
 			_rb.position = new Vector3(_rb.position.x, 0.0f, _rb.position.z);
 			_rb.velocity = new Vector3(_rb.velocity.x, 0.0f, _rb.velocity.z);
+			_timeLastGrounded = Time.time;
 		}
+
+		// Jump
+		float timeSinceGrounded = Time.time - _timeLastGrounded;
+		float timeSincePressedJump = Time.time - _timeLastPressedJump;
+		float timeSinceJumped = Time.time - _timeLastJumped;
+		if (timeSincePressedJump <= _jumpGracePeriod
+			&& timeSinceGrounded <= _jumpGracePeriod
+			&& timeSinceJumped >= _timeBetweenJumps)
+		{
+			_rb.velocity = new Vector3(_rb.velocity.x, 0.0f, _rb.velocity.z);
+			_rb.AddForce(_jumpForce * Vector3.up, ForceMode.VelocityChange);
+			_timeLastJumped = Time.time;
+		}
+
+		// Animate
+		UpdateAnimation();
 	}
 
 	private void MoveHorizontal()
@@ -86,5 +137,37 @@ public class Player : MonoBehaviour
 			velocity = velocity.normalized * _maxHorizontalSpeed;
 			_rb.velocity = new Vector3(velocity.x, _rb.velocity.y, velocity.z);
 		}
+	}
+
+	private void UpdateAnimation()
+	{
+		// Anim
+		Vector3 velocity = _rb.velocity;
+		if ((Time.time - _timeLastGrounded) >= _jumpGracePeriod)
+		{
+			if (velocity.y > 0.0f)
+			{
+				_anim.PlayJump();
+			}
+			else
+			{
+				_anim.PlayFall();
+			}
+		}
+		else
+		{
+			Vector3 horizontal = new Vector3(velocity.x, 0.0f, velocity.z);
+			if (horizontal.sqrMagnitude >= _idleThreshold * _idleThreshold)
+			{
+				_anim.PlayWalk();
+			}
+			else
+			{
+				_anim.PlayIdle();
+			}
+		}
+
+		// Sprite flipping
+
 	}
 }

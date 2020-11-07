@@ -12,7 +12,6 @@ Billionaires have colonized, commercialized and privatized the moon. You're only
 - You need to retrieve the right vehicle and drive it back to them, if correct they will drive off
 
 === TODO
-- Character running around without animation
 - Spacecraft enter/drive/exit, probably want a few different feel configurations for different vehicles
 - Spacecraft animations (tilt to turn/thrust/brake)
 - Inverted hull outline so you know which spacecraft you're interacting with, always wanted to try this
