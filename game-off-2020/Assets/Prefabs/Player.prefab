@@ -51,9 +51,12 @@ MonoBehaviour:
   _moveForce: 60
   _maxHorizontalSpeed: 10
   _jumpForce: 15
+  _jumpGracePeriod: 0.1
+  _timeBetweenJumps: 0.1
   _raycastHeightOffset: 1
   _heightAboveGround: 0.2
   _idleThreshold: 0.1
+  _spriteFlipThreshold: 0.01
 --- !u!136 &2945493508620789527
 CapsuleCollider:
   m_ObjectHideFlags: 0

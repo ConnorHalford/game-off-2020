@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
 	[SerializeField] private float _raycastHeightOffset = 1.0f;
 	[SerializeField] private float _heightAboveGround = 0.2f;
 	[SerializeField] private float _idleThreshold = 0.1f;
+	[SerializeField] private float _spriteFlipThreshold = 0.01f;
 
 	private Camera _camera = null;
 	private Rigidbody _rb = null;
@@ -75,7 +76,8 @@ public class Player : MonoBehaviour
 		MoveHorizontal();
 
 		// Grounded check
-		if (Physics.Raycast(transform.position + _raycastHeightOffset * Vector3.up, Vector3.down, out RaycastHit hit, 100.0f, _maskEnvironment))
+		if (Physics.Raycast(transform.position + _raycastHeightOffset * Vector3.up, Vector3.down,
+			out RaycastHit hit, float.MaxValue, _maskEnvironment))
 		{
 			if (hit.distance < _raycastHeightOffset + _heightAboveGround)
 			{
@@ -168,6 +170,13 @@ public class Player : MonoBehaviour
 		}
 
 		// Sprite flipping
-
+		if (_moveInput.x < -_spriteFlipThreshold)
+		{
+			_sprite.flipX = true;
+		}
+		else if (_moveInput.x > _spriteFlipThreshold)
+		{
+			_sprite.flipX = false;
+		}
 	}
 }
