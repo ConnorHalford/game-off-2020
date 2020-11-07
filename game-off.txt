@@ -23,3 +23,5 @@ Billionaires have colonized, commercialized and privatized the moon. You're only
 - Sound effects
 - Music
 - Main menu
+
+quadratic drag instead of linearly proportional to velocity?

@@ -22,7 +22,7 @@ public class BlobShadow : MonoBehaviour
 		}
 
 		float y = _height;
-		if (Physics.Raycast(_follow.position, Vector3.down, out RaycastHit hit, float.PositiveInfinity, _layerMask))
+		if (Physics.Raycast(_follow.position + _height * Vector3.up, Vector3.down, out RaycastHit hit, float.PositiveInfinity, _layerMask))
 		{
 			y = hit.point.y + _height;
 		}
