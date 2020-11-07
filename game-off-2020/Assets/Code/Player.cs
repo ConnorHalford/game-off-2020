@@ -20,32 +20,21 @@ public class Player : MonoBehaviour
 	[SerializeField] private float _spriteFlipThreshold = 0.01f;
 	[SerializeField] private bool _spriteJumpsInScreenSpace = false;
 
-	private Camera _camera = null;
 	private Rigidbody _rb = null;
-	private CapsuleCollider _collider = null;
 	private Plane _groundPlane = new Plane(Vector3.up, Vector3.zero);
 
-	private Controls _controls = null;
 	private Vector2 _moveInput = Vector2.zero;
 	private float _timeLastGrounded = 0.0f;
 	private float _timeLastJumped = 0.0f;
 	private float _timeLastPressedJump = 0.0f;
 
-	private int _maskEnvironment = 0;
-
 	private void Awake()
 	{
-		Application.targetFrameRate = 60;
-
-		_controls = new Controls();
 		_rb = GetComponent<Rigidbody>();
-		_collider = GetComponent<CapsuleCollider>();
-		_maskEnvironment = LayerMask.GetMask("Environment");
 	}
 
 	private void OnEnable()
 	{
-		_controls.Character.Enable();
 		_sprite.flipX = false;
 		_anim.PlayIdle();
 		_timeLastGrounded = Time.time;
@@ -53,15 +42,10 @@ public class Player : MonoBehaviour
 		_timeLastPressedJump = 0.0f;
 	}
 
-	private void OnDisable()
-	{
-		_controls.Character.Disable();
-	}
-
 	private void Update()
 	{
-		_moveInput = _controls.Character.Movement.ReadValue<Vector2>();
-		if (_controls.Character.Jump.triggered)
+		_moveInput = Globals.Controls.Character.Movement.ReadValue<Vector2>();
+		if (Globals.Controls.Character.Jump.triggered)
 		{
 			_timeLastPressedJump = Time.time;
 		}
@@ -69,11 +53,6 @@ public class Player : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		if (_camera == null)
-		{
-			_camera = Camera.main;
-		}
-
 		// Move
 		MoveHorizontal();
 
@@ -81,7 +60,7 @@ public class Player : MonoBehaviour
 		float heightAboveGround = transform.position.y;
 		Vector3 basePosition = transform.position;
 		Ray ray = new Ray(transform.position + _raycastHeightOffset * Vector3.up, Vector3.down);
-		if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, _maskEnvironment))
+		if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, Globals.MaskEnvironment))
 		{
 			if (hit.distance < _raycastHeightOffset + _heightConsideredGrounded)
 			{
@@ -134,17 +113,17 @@ public class Player : MonoBehaviour
 	{
 		// We want 'forward' and 'backward' to be up and down the screen, but since it's a perspective
 		// camera we have to create a screenspace up vector then project it onto a flat plane
-		Vector3 screenPos = _camera.WorldToScreenPoint(transform.position);
-		Ray ray = _camera.ScreenPointToRay(screenPos);
+		Vector3 screenPos = Globals.Camera.WorldToScreenPoint(transform.position);
+		Ray ray = Globals.Camera.ScreenPointToRay(screenPos);
 		_groundPlane.Raycast(ray, out float entryDistance);
 		Vector3 posA = ray.origin + entryDistance * ray.direction;
 
-		ray = _camera.ScreenPointToRay(screenPos + Vector3.up);		// Screenspace up vector
+		ray = Globals.Camera.ScreenPointToRay(screenPos + Vector3.up);		// Screenspace up vector
 		_groundPlane.Raycast(ray, out entryDistance);
 		Vector3 posB = ray.origin + entryDistance * ray.direction;
 
 		Vector3 forward = (posB - posA).normalized;		// Screenspace up vector projected to world space
-		Vector3 right = _camera.transform.right;
+		Vector3 right = Globals.Camera.transform.right;
 
 		// Apply horizontal movement
 		Vector2 input = _moveInput * _moveForce * Time.deltaTime;
