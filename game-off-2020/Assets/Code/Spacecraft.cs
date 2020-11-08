@@ -28,6 +28,12 @@ public class Spacecraft : MonoBehaviour
 	[SerializeField] private float _turnSpeed = 5.0f;
 	[SerializeField] private float _rollAmount = 1.0f;
 
+	[Header("Driving")]
+	[SerializeField] private float _driveForceForward = 60.0f;
+	[SerializeField] private float _driveForceReverse = 30.0f;
+	[SerializeField] private float _maxForwardSpeed = 10.0f;
+	[SerializeField] private float _maxReverseSpeed = 1.0f;
+
 	private Rigidbody _rb = null;
 	private bool _driving = false;
 	private float _targetHeight = 0.0f;
@@ -85,6 +91,23 @@ public class Spacecraft : MonoBehaviour
 		}
 		Quaternion roll = Quaternion.Euler(0.0f, 0.0f, _rb.angularVelocity.y * _rollAmount * Time.deltaTime);
 		_modelRoot.localRotation = roll;
+
+		// Drive
+		if (_driving)
+		{
+			float force = (_moveInput.y > 0.0f ? _driveForceForward : _driveForceReverse) * _moveInput.y * Time.deltaTime;
+			_rb.AddForce(force * transform.forward, ForceMode.VelocityChange);
+		}
+
+		// Cap horizontal speed
+		Vector3 velocity = new Vector3(_rb.velocity.x, 0.0f, _rb.velocity.z);
+		bool movingForward = Vector3.Dot(velocity, transform.forward) > 0.0f;
+		float maxSpeed = movingForward ? _maxForwardSpeed : _maxReverseSpeed;
+		if (velocity.sqrMagnitude > maxSpeed * maxSpeed)
+		{
+			velocity = velocity.normalized * maxSpeed;
+			_rb.velocity = new Vector3(velocity.x, _rb.velocity.y, velocity.z);
+		}
 	}
 
 	private void StartDriving()

@@ -296,8 +296,12 @@ MonoBehaviour:
   _heightWhenParked: 0.1
   _levitationSpeedUp: 17
   _levitationSpeedDown: 10
-  _turnSpeed: 60
+  _turnSpeed: 40
   _rollAmount: -400
+  _driveForceForward: 60
+  _driveForceReverse: 30
+  _maxForwardSpeed: 8
+  _maxReverseSpeed: 4
 --- !u!4 &427786925
 Transform:
   m_ObjectHideFlags: 0
