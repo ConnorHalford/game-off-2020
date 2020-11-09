@@ -295,6 +295,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07705c82a9780424fb49c6c81ea53daa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _debugRadius: 0.1
+  _debugLineColor: {r: 1, g: 1, b: 1, a: 1}
+  _debugSphereColor: {r: 1, g: 1, b: 1, a: 1}
+  _debugHighlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _model: 0
   _modelGOs:
   - {fileID: 2086861144}
@@ -312,8 +316,8 @@ MonoBehaviour:
   _rearRightAnchor: {fileID: 1591816691}
   _heightWhenDriving: 0.5
   _heightWhenParked: 0.1
-  _levitationSpeedUp: 1
-  _levitationSpeedDown: 1
+  _levitationSpeedUp: 17
+  _levitationSpeedDown: 10
   _turnSpeed: 40
   _rollAmount: -400
   _driveForceForward: 60
