@@ -19,6 +19,10 @@ public class Spacecraft : MonoBehaviour
 	[SerializeField] private Transform _modelRoot = null;
 
 	[Header("Height")]
+	[SerializeField] private Transform _frontLeftAnchor = null;
+	[SerializeField] private Transform _frontRightAnchor = null;
+	[SerializeField] private Transform _rearLeftAnchor = null;
+	[SerializeField] private Transform _rearRightAnchor = null;
 	[SerializeField] private float _heightWhenDriving = 0.5f;
 	[SerializeField] private float _heightWhenParked = 0.1f;
 	[SerializeField] private float _levitationSpeedUp = 5.0f;
@@ -75,13 +79,131 @@ public class Spacecraft : MonoBehaviour
 		}
 	}
 
+	private void LateUpdate()
+	{
+		ResetUnwantedRotations();
+	}
+
+	private void LevitateAnchor(Transform anchor)
+	{
+		Vector3 groundPoint = new Vector3(anchor.position.x, 0.0f, anchor.position.z);
+		if (Physics.Raycast(anchor.position, Vector3.up, out RaycastHit hit, float.MaxValue, Globals.MaskEnvironment))
+		{
+			groundPoint = hit.point;
+		}
+		else if (Physics.Raycast(anchor.position, Vector3.down, out hit, float.MaxValue, Globals.MaskEnvironment))
+		{
+			groundPoint = hit.point;
+		}
+		float force = 0.0f;
+		float targetY = groundPoint.y + _targetHeight;
+		float heightDelta = Mathf.Abs(anchor.position.y - targetY);
+		if (anchor.position.y < targetY)
+		{
+			// Too low, move up
+			force = _levitationSpeedUp;
+		}
+		else if (anchor.position.y > targetY)
+		{
+			// Too high, move down
+			force = -_levitationSpeedDown;
+		}
+		force *= Time.deltaTime;
+		_rb.AddForceAtPosition(force * Vector3.up, anchor.position, ForceMode.VelocityChange);
+
+
+
+		if (anchor == _frontLeftAnchor)
+		{
+			groundFrontLeft = groundPoint;
+			targetFrontLeft = groundPoint + _targetHeight * Vector3.up;
+		}
+		else if (anchor == _frontRightAnchor)
+		{
+			groundFrontRight = groundPoint;
+			targetFrontRight = groundPoint + _targetHeight * Vector3.up;
+		}
+		else if (anchor == _rearLeftAnchor)
+		{
+			groundRearLeft = groundPoint;
+			targetRearLeft = groundPoint + _targetHeight * Vector3.up;
+		}
+		else if (anchor == _rearRightAnchor)
+		{
+			groundRearRight = groundPoint;
+			targetRearRight = groundPoint + _targetHeight * Vector3.up;
+		}
+	}
+
+	private Vector3 targetFrontLeft;
+	private Vector3 targetFrontRight;
+	private Vector3 targetRearLeft;
+	private Vector3 targetRearRight;
+	private Vector3 groundFrontLeft;
+	private Vector3 groundFrontRight;
+	private Vector3 groundRearLeft;
+	private Vector3 groundRearRight;
+
+	private void OnDrawGizmos()
+	{
+		Gizmos.DrawSphere(_frontLeftAnchor.position, 0.1f);
+		Gizmos.DrawSphere(_frontRightAnchor.position, 0.1f);
+		Gizmos.DrawSphere(_rearLeftAnchor.position, 0.1f);
+		Gizmos.DrawSphere(_rearRightAnchor.position, 0.1f);
+		Gizmos.DrawSphere(targetFrontLeft, 0.1f);
+		Gizmos.DrawSphere(targetFrontRight, 0.1f);
+		Gizmos.DrawSphere(targetRearLeft, 0.1f);
+		Gizmos.DrawSphere(targetRearRight, 0.1f);
+		Gizmos.DrawSphere(groundFrontLeft, 0.1f);
+		Gizmos.DrawSphere(groundFrontRight, 0.1f);
+		Gizmos.DrawSphere(groundRearLeft, 0.1f);
+		Gizmos.DrawSphere(groundRearRight, 0.1f);
+		Gizmos.DrawLine(_frontLeftAnchor.position, targetFrontLeft);
+		Gizmos.DrawLine(_frontRightAnchor.position, targetFrontRight);
+		Gizmos.DrawLine(_rearLeftAnchor.position, targetRearLeft);
+		Gizmos.DrawLine(_rearRightAnchor.position, targetRearRight);
+		Gizmos.DrawLine(groundFrontLeft, targetFrontLeft);
+		Gizmos.DrawLine(groundFrontRight, targetFrontRight);
+		Gizmos.DrawLine(groundRearLeft, targetRearLeft);
+		Gizmos.DrawLine(groundRearRight, targetRearRight);
+	}
+
+	public int LevitateMode = 0;
+
 	private void FixedUpdate()
 	{
 		// Levitate
-		float y = _rb.position.y;
-		float deltaY = Time.deltaTime * (y < _targetHeight ? _levitationSpeedUp : _levitationSpeedDown);
-		y = Mathf.SmoothStep(y, _targetHeight, deltaY);
-		_rb.position = new Vector3(_rb.position.x, y, _rb.position.z);
+		if (LevitateMode == 0)
+		{
+			_levitationSpeedUp = 17.0f;
+			_levitationSpeedDown = 10.0f;
+
+			Vector3 groundPoint = new Vector3(_rb.position.x, 0.0f, _rb.position.z);
+			if (Physics.Raycast(_rb.position, Vector3.up, out RaycastHit hit, float.MaxValue, Globals.MaskEnvironment))
+			{
+				groundPoint = hit.point;
+			}
+			else if (Physics.Raycast(_rb.position, Vector3.down, out hit, float.MaxValue, Globals.MaskEnvironment))
+			{
+				groundPoint = hit.point;
+			}
+			float targetY = groundPoint.y + _targetHeight;
+
+			float y = _rb.position.y;
+			float deltaY = Time.deltaTime * (y < targetY ? _levitationSpeedUp : _levitationSpeedDown);
+			y = Mathf.SmoothStep(y, targetY, deltaY);
+			_rb.position = new Vector3(_rb.position.x, y, _rb.position.z);
+		}
+		else if (LevitateMode == 1)
+		{
+			_levitationSpeedUp = 1.0f;
+			_levitationSpeedDown = 1.0f;
+
+			LevitateAnchor(_frontLeftAnchor);
+			LevitateAnchor(_frontRightAnchor);
+			LevitateAnchor(_rearLeftAnchor);
+			LevitateAnchor(_rearRightAnchor);
+		}
 
 		// Rotate
 		if (_driving)
@@ -108,6 +230,26 @@ public class Spacecraft : MonoBehaviour
 			velocity = velocity.normalized * maxSpeed;
 			_rb.velocity = new Vector3(velocity.x, _rb.velocity.y, velocity.z);
 		}
+
+		ResetUnwantedRotations();
+	}
+
+	private void ResetUnwantedRotations()
+	{
+		Vector3 rotation = transform.eulerAngles;
+		if (_rb.constraints.HasFlag(RigidbodyConstraints.FreezeRotationX))
+		{
+			rotation = new Vector3(0.0f, rotation.y, rotation.z);
+		}
+		if (_rb.constraints.HasFlag(RigidbodyConstraints.FreezeRotationY))
+		{
+			rotation = new Vector3(rotation.x, 0.0f, rotation.z);
+		}
+		if (_rb.constraints.HasFlag(RigidbodyConstraints.FreezeRotationZ))
+		{
+			rotation = new Vector3(rotation.x, rotation.y, 0.0f);
+		}
+		transform.eulerAngles = rotation;
 	}
 
 	private void StartDriving()
