@@ -12,14 +12,13 @@ Billionaires have colonized, commercialized and privatized the moon. Your only s
 - You need to retrieve the right vehicle and drive it back to them, if correct they will drive off
 
 === TODO
-- Spacecraft enter/drive/exit, probably want a few different feel configurations for different vehicles
-- Inverted hull outline so you know which spacecraft you're interacting with, always wanted to try this
 - NPC arrival/departure
 - Spacecraft damage
 - Particle effects
 - Sound effects
 - Music
 - Main menu
+- Maybe have different spacecraft have different handling
 
 === BUGS
 - Holding a move input in mid-air towards a wall pins the player to that wall

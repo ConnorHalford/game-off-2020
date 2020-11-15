@@ -22,7 +22,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "EnterVehicle",
+                    "name": "EnterSpacecraft",
                     "type": "Button",
                     "id": "0f831b7f-ef12-4544-ace0-9793d619e010",
                     "expectedControlType": "Button",
@@ -126,7 +126,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "EnterVehicle",
+                    "action": "EnterSpacecraft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -137,7 +137,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "EnterVehicle",
+                    "action": "EnterSpacecraft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

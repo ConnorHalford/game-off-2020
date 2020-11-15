@@ -65,23 +65,33 @@ public class Spacecraft : MonoBehaviour
 	[SerializeField] private float _driveForceReverse = 30.0f;
 	[SerializeField] private float _maxForwardSpeed = 10.0f;
 	[SerializeField] private float _maxReverseSpeed = 1.0f;
+	[SerializeField] private float _minTimeBeforeExit = 0.1f;
+
+	[Header("Outline")]
+	[SerializeField] private MeshFilter _outline = null;
+	[SerializeField] private float _outlineScale = 1.1f;
 
 	private Rigidbody _rb = null;
-	private bool _driving = false;
+	private float _timeStartedDriving = -1.0f;
 	private float _targetHeight = 0.0f;
 	private Vector2 _moveInput = Vector2.zero;
 	private Model _modelPrevFrame = Model.CargoA;
+	private Mesh _outlineMesh = null;
+
+	private bool IsDriving { get { return _timeStartedDriving >= 0.0f; } }
 
 	private void Awake()
 	{
 		_rb = GetComponent<Rigidbody>();
 		ChangeModel(_model);
+		SetOutlineVisible(false);
 		Globals.RegisterSpacecraft(this);
 	}
 
 	private void OnDestroy()
 	{
 		Globals.DeregisterSpacecraft(this);
+		Destroy(_outlineMesh);
 	}
 
 	private void Update()
@@ -92,24 +102,20 @@ public class Spacecraft : MonoBehaviour
 			ChangeModel(_model);
 		}
 
-		// Start/stop driving
-		if (Globals.Controls.Character.EnterVehicle.triggered)
+		_moveInput = Vector2.zero;
+		if (IsDriving)
 		{
-			if (_driving)
+			// Stop driving
+			float timeSpentDriving = Time.time - _timeStartedDriving;
+			if (timeSpentDriving >= _minTimeBeforeExit && Globals.Controls.Character.EnterSpacecraft.triggered)
 			{
 				StopDriving();
 			}
 			else
 			{
-				StartDriving();
+				// Store move input
+				_moveInput = Globals.Controls.Character.Movement.ReadValue<Vector2>();
 			}
-		}
-
-		// Read input
-		_moveInput = Vector2.zero;
-		if (_driving)
-		{
-			_moveInput = Globals.Controls.Character.Movement.ReadValue<Vector2>();
 		}
 	}
 
@@ -169,7 +175,7 @@ public class Spacecraft : MonoBehaviour
 #endif	// UNITY_EDITOR
 
 		// Rotate
-		if (_driving)
+		if (IsDriving)
 		{
 			float turn = _moveInput.x * _turnSpeed * Time.deltaTime;
 			_rb.angularVelocity += turn * Vector3.up;
@@ -180,7 +186,7 @@ public class Spacecraft : MonoBehaviour
 		_modelRoot.rotation = modelRotation;
 
 		// Drive
-		if (_driving)
+		if (IsDriving)
 		{
 			float force = (_moveInput.y > 0.0f ? _driveForceForward : _driveForceReverse) * _moveInput.y * Time.deltaTime;
 			Vector3 direction = new Vector3(_modelRoot.forward.x, 0.0f, _modelRoot.forward.z);	// note not normalized when not horizontal
@@ -218,22 +224,28 @@ public class Spacecraft : MonoBehaviour
 		transform.eulerAngles = rotation;
 	}
 
-	private void StartDriving()
+	public void StartDriving()
 	{
 		_targetHeight = _heightWhenDriving;
-		_driving = true;
+		_timeStartedDriving = Time.time;
 		Globals.StartDriving(this);
 	}
 
 	private void StopDriving()
 	{
 		_targetHeight = _heightWhenParked;
-		_driving = false;
+		_timeStartedDriving = -1.0f;
 		Globals.StopDriving();
+	}
+
+	public void SetOutlineVisible(bool visible)
+	{
+		_outline.gameObject.SetActive(visible);
 	}
 
 	private void ChangeModel(Model model)
 	{
+		// Enable correct model
 		_model = model;
 		_modelPrevFrame = _model;
 		_modelGOs[(int)Model.CargoA].SetActive(_model == Model.CargoA);
@@ -244,6 +256,28 @@ public class Spacecraft : MonoBehaviour
 		_modelGOs[(int)Model.SpeederB].SetActive(_model == Model.SpeederB);
 		_modelGOs[(int)Model.SpeederC].SetActive(_model == Model.SpeederC);
 		_modelGOs[(int)Model.SpeederD].SetActive(_model == Model.SpeederD);
+
+		// Generate inverted hull outline mesh
+		if (_outlineMesh != null)
+		{
+			Destroy(_outlineMesh);
+			_outlineMesh = null;
+		}
+		Mesh modelMesh = _modelGOs[(int)_model].GetComponent<MeshFilter>().sharedMesh;
+		_outlineMesh = new Mesh();
+		int numTris = modelMesh.triangles.Length;
+		int[] invertedTris = new int[numTris];
+		for (int i = 0; i < numTris; i += 3)
+		{
+			invertedTris[i] = modelMesh.triangles[i];
+			invertedTris[i + 1] = modelMesh.triangles[i + 2];	// Swap winding
+			invertedTris[i + 2] = modelMesh.triangles[i + 1];
+		}
+		_outlineMesh.vertices = modelMesh.vertices;
+		_outlineMesh.normals = modelMesh.normals;
+		_outlineMesh.triangles = invertedTris;
+		_outline.sharedMesh = _outlineMesh;
+		_outline.transform.localScale = _outlineScale * Vector3.one;
 	}
 
 # if UNITY_EDITOR

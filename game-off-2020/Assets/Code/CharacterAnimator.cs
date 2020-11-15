@@ -48,7 +48,7 @@ public class CharacterAnimator : MonoBehaviour
 
 	private void Play(int anim)
 	{
-		if (_animator != null)
+		if (_animator != null && _animator.isActiveAndEnabled)
 		{
 			_animator.Play(anim);
 		}

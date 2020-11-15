@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
 	[SerializeField] private float _jumpGracePeriod = 0.1f;
 	[SerializeField] private float _timeBetweenJumps = 0.1f;
 	[SerializeField] private float _exitSpacecraftHeight = 1.0f;
+	[SerializeField] private float _enterSpacecraftDistance = 3.0f;
 
 	[Header("Anim")]
 	[SerializeField] private float _raycastHeightOffset = 1.0f;
@@ -28,6 +29,8 @@ public class Player : MonoBehaviour
 	private float _timeLastGrounded = 0.0f;
 	private float _timeLastJumped = 0.0f;
 	private float _timeLastPressedJump = 0.0f;
+	private bool _wantEnterCraft = false;
+	private float _timeLastExitedCraft = Mathf.NegativeInfinity;
 
 	private void Awake()
 	{
@@ -62,7 +65,9 @@ public class Player : MonoBehaviour
 	private void OnStopDriving(Spacecraft craft)
 	{
 		transform.position = craft.transform.position + _exitSpacecraftHeight * Vector3.up;
+		_rb.velocity = Vector3.zero;
 		gameObject.SetActive(true);
+		_timeLastExitedCraft = Time.time;
 	}
 
 	private void Update()
@@ -72,12 +77,44 @@ public class Player : MonoBehaviour
 		{
 			_timeLastPressedJump = Time.time;
 		}
+		_wantEnterCraft |= Globals.Controls.Character.EnterSpacecraft.triggered;
 	}
 
 	private void FixedUpdate()
 	{
 		// Move
 		MoveHorizontal();
+
+		// Outline nearest spacecraft
+		Spacecraft nearestCraft = null;
+		float nearestDistSqr = Mathf.Infinity;
+		int numSpacecraft = Globals.Spacecraft.Count;
+		Vector3 position = transform.position;
+		for (int i = 0; i < numSpacecraft; ++i)
+		{
+			Vector3 craftPosition = Globals.Spacecraft[i].transform.position;
+			float distSqr = (craftPosition - position).sqrMagnitude;
+			if (distSqr < nearestDistSqr)
+			{
+				nearestDistSqr = distSqr;
+				nearestCraft = Globals.Spacecraft[i];
+			}
+		}
+		if (nearestDistSqr > _enterSpacecraftDistance * _enterSpacecraftDistance)
+		{
+			nearestCraft = null;
+		}
+		for (int i = 0; i < numSpacecraft; ++i)
+		{
+			Globals.Spacecraft[i].SetOutlineVisible(Globals.Spacecraft[i] == nearestCraft);
+		}
+
+		// Attempt to enter nearest spacecraft
+		float timeSinceExited = Time.time - _timeLastExitedCraft;
+		if (!Globals.IsDriving && nearestCraft != null && timeSinceExited >= 0.1f && _wantEnterCraft)
+		{
+			nearestCraft.StartDriving();
+		}
 
 		// Grounded check
 		float heightAboveGround = transform.position.y;
@@ -130,6 +167,7 @@ public class Player : MonoBehaviour
 
 		// Animate
 		UpdateAnimation();
+		_wantEnterCraft = false;
 	}
 
 	private void MoveHorizontal()

@@ -35,7 +35,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""EnterVehicle"",
+                    ""name"": ""EnterSpacecraft"",
                     ""type"": ""Button"",
                     ""id"": ""0f831b7f-ef12-4544-ace0-9793d619e010"",
                     ""expectedControlType"": ""Button"",
@@ -139,7 +139,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""EnterVehicle"",
+                    ""action"": ""EnterSpacecraft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -150,7 +150,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""EnterVehicle"",
+                    ""action"": ""EnterSpacecraft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -163,7 +163,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Character = asset.FindActionMap("Character", throwIfNotFound: true);
         m_Character_Movement = m_Character.FindAction("Movement", throwIfNotFound: true);
         m_Character_Jump = m_Character.FindAction("Jump", throwIfNotFound: true);
-        m_Character_EnterVehicle = m_Character.FindAction("EnterVehicle", throwIfNotFound: true);
+        m_Character_EnterSpacecraft = m_Character.FindAction("EnterSpacecraft", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -215,14 +215,14 @@ public class @Controls : IInputActionCollection, IDisposable
     private ICharacterActions m_CharacterActionsCallbackInterface;
     private readonly InputAction m_Character_Movement;
     private readonly InputAction m_Character_Jump;
-    private readonly InputAction m_Character_EnterVehicle;
+    private readonly InputAction m_Character_EnterSpacecraft;
     public struct CharacterActions
     {
         private @Controls m_Wrapper;
         public CharacterActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Character_Movement;
         public InputAction @Jump => m_Wrapper.m_Character_Jump;
-        public InputAction @EnterVehicle => m_Wrapper.m_Character_EnterVehicle;
+        public InputAction @EnterSpacecraft => m_Wrapper.m_Character_EnterSpacecraft;
         public InputActionMap Get() { return m_Wrapper.m_Character; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -238,9 +238,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Jump.started -= m_Wrapper.m_CharacterActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_CharacterActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_CharacterActionsCallbackInterface.OnJump;
-                @EnterVehicle.started -= m_Wrapper.m_CharacterActionsCallbackInterface.OnEnterVehicle;
-                @EnterVehicle.performed -= m_Wrapper.m_CharacterActionsCallbackInterface.OnEnterVehicle;
-                @EnterVehicle.canceled -= m_Wrapper.m_CharacterActionsCallbackInterface.OnEnterVehicle;
+                @EnterSpacecraft.started -= m_Wrapper.m_CharacterActionsCallbackInterface.OnEnterSpacecraft;
+                @EnterSpacecraft.performed -= m_Wrapper.m_CharacterActionsCallbackInterface.OnEnterSpacecraft;
+                @EnterSpacecraft.canceled -= m_Wrapper.m_CharacterActionsCallbackInterface.OnEnterSpacecraft;
             }
             m_Wrapper.m_CharacterActionsCallbackInterface = instance;
             if (instance != null)
@@ -251,9 +251,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
-                @EnterVehicle.started += instance.OnEnterVehicle;
-                @EnterVehicle.performed += instance.OnEnterVehicle;
-                @EnterVehicle.canceled += instance.OnEnterVehicle;
+                @EnterSpacecraft.started += instance.OnEnterSpacecraft;
+                @EnterSpacecraft.performed += instance.OnEnterSpacecraft;
+                @EnterSpacecraft.canceled += instance.OnEnterSpacecraft;
             }
         }
     }
@@ -262,6 +262,6 @@ public class @Controls : IInputActionCollection, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
-        void OnEnterVehicle(InputAction.CallbackContext context);
+        void OnEnterSpacecraft(InputAction.CallbackContext context);
     }
 }
