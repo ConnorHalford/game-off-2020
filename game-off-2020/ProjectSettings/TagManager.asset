@@ -15,10 +15,10 @@ TagManager:
   - 
   - Environment
   - PostProcessing
-  - 
-  - 
-  - 
-  - 
+  - SpacecraftCollision
+  - Spacecraft
+  - GeneralCollision
+  - Player
   - 
   - 
   - 

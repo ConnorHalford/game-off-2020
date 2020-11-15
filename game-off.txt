@@ -13,11 +13,6 @@ Billionaires have colonized, commercialized and privatized the moon. Your only s
 
 === TODO
 - Spacecraft enter/drive/exit, probably want a few different feel configurations for different vehicles
-- Spacecraft animations (tilt to turn/thrust/brake)
-	- need vertical collisions when below walls so you can't climb them
-	- need to smooth rotation somehow when one anchor is off the cliff
-	- confirm rotation speed isn't affected by slope angle
-	- introduce additional roll based on sideways slope angle
 - Inverted hull outline so you know which spacecraft you're interacting with, always wanted to try this
 - NPC arrival/departure
 - Spacecraft damage
