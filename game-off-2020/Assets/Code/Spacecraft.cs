@@ -39,10 +39,11 @@ public class Spacecraft : MonoBehaviour
 	[SerializeField] private Color _debugHighlightColor = Color.yellow;
 #endif	// UNITY_EDITOR
 
-	[Header("References")]
+	[Header("Model")]
 	[SerializeField] private Model _model = Model.CargoA;
 	[SerializeField] private GameObject[] _modelGOs = new GameObject[System.Enum.GetValues(typeof(Model)).Length];
 	[SerializeField] private Transform _modelRoot = null;
+	[SerializeField] private Color[] _colors = null;
 
 	[Header("Height")]
 	[SerializeField] private Transform _frontLeftAnchor = null;
@@ -256,6 +257,29 @@ public class Spacecraft : MonoBehaviour
 		_modelGOs[(int)Model.SpeederB].SetActive(_model == Model.SpeederB);
 		_modelGOs[(int)Model.SpeederC].SetActive(_model == Model.SpeederC);
 		_modelGOs[(int)Model.SpeederD].SetActive(_model == Model.SpeederD);
+
+		// Tint model to random color
+		MeshRenderer renderer = _modelGOs[(int)_model].GetComponent<MeshRenderer>();
+		Material[] sharedMaterials = renderer.sharedMaterials;
+		int numSharedMaterials = sharedMaterials.Length;
+		int tintMaterialIndex = -1;
+		for (int i = 0; i < numSharedMaterials; ++i)
+		{
+			if (string.Equals(sharedMaterials[i].name, "metalRed", System.StringComparison.Ordinal))
+			{
+				tintMaterialIndex = i;
+				break;
+			}
+		}
+		if (tintMaterialIndex >= 0)
+		{
+			Color tint = _colors[Random.Range(0, _colors.Length)];
+			tint = new Color(tint.r, tint.g, tint.b, 1.0f);
+			MaterialPropertyBlock block = new MaterialPropertyBlock();
+			renderer.GetPropertyBlock(block, tintMaterialIndex);
+			block.SetColor("_Color", tint);
+			renderer.SetPropertyBlock(block, tintMaterialIndex);
+		}
 
 		// Generate inverted hull outline mesh
 		if (_outlineMesh != null)
