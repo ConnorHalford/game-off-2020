@@ -1,6 +1,6 @@
 
 === SPACE VALET
-Billionaires have colonized, commercialized and privatized the moon. You're only shot at getting to go up there is to work your same crappy job as a valet, but _in space_, which is much cooler. It'll be worth it. Definitely.
+Billionaires have colonized, commercialized and privatized the moon. Your only shot at getting to go up there is to work your same crappy job as a valet, but _in space_, which is much cooler. It'll be worth it. Definitely.
 
 === GAMEPLAY
 - You are a character running around on the moon
@@ -14,6 +14,10 @@ Billionaires have colonized, commercialized and privatized the moon. You're only
 === TODO
 - Spacecraft enter/drive/exit, probably want a few different feel configurations for different vehicles
 - Spacecraft animations (tilt to turn/thrust/brake)
+	- need vertical collisions when below walls so you can't climb them
+	- need to smooth rotation somehow when one anchor is off the cliff
+	- confirm rotation speed isn't affected by slope angle
+	- introduce additional roll based on sideways slope angle
 - Inverted hull outline so you know which spacecraft you're interacting with, always wanted to try this
 - NPC arrival/departure
 - Spacecraft damage
@@ -21,5 +25,3 @@ Billionaires have colonized, commercialized and privatized the moon. You're only
 - Sound effects
 - Music
 - Main menu
-
-quadratic drag instead of linearly proportional to velocity?

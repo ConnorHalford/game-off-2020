@@ -53,6 +53,8 @@ public class Spacecraft : MonoBehaviour
 	[SerializeField] private float _heightWhenParked = 0.1f;
 	[SerializeField] private float _levitationSpeedUp = 5.0f;
 	[SerializeField] private float _levitationSpeedDown = 1.0f;
+	[SerializeField, Range(0.0f, 1.0f)] private float _normalThreshold = 0.8f;
+	[SerializeField, Range(0.0f, 1.0f)] private float _heightThreshold = 0.8f;
 
 	[Header("Turning")]
 	[SerializeField] private float _turnSpeed = 5.0f;
@@ -120,6 +122,10 @@ public class Spacecraft : MonoBehaviour
 		else if (Physics.Raycast(position, Vector3.down, out hit, float.MaxValue, Globals.MaskEnvironment))
 		{
 			groundPoint = hit.point;
+			if (Vector3.Dot(hit.normal, Vector3.up) < _normalThreshold)
+			{
+				groundPoint = new Vector3(groundPoint.x, Mathf.Ceil(groundPoint.y), groundPoint.z);
+			}
 		}
 		return groundPoint;
 	}
@@ -132,6 +138,15 @@ public class Spacecraft : MonoBehaviour
 		Vector3 frontGround = CalcGroundPoint(frontAnchor);
 		Vector3 rearGround = CalcGroundPoint(rearAnchor);
 		Vector3 centerGround = CalcGroundPoint(_rb.position);
+
+		if (Mathf.Max(Mathf.Abs(frontGround.y - centerGround.y), Mathf.Abs(centerGround.y - rearGround.y)) >= _heightThreshold)
+		{
+			float biggestY = Mathf.Max(frontGround.y, centerGround.y, rearGround.y);
+			frontGround = new Vector3(frontGround.x, biggestY, frontGround.z);
+			rearGround = new Vector3(rearGround.x, biggestY, rearGround.z);
+			centerGround = new Vector3(centerGround.x, biggestY, centerGround.z);
+		}
+
 		Vector3 frontTarget = frontGround + _targetHeight * Vector3.up;
 		Vector3 rearTarget = rearGround + _targetHeight * Vector3.up;
 		Vector3 rearToFront = frontTarget - rearTarget;
