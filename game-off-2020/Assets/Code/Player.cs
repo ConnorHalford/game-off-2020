@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
 	[SerializeField] private float _jumpForce = 60.0f;
 	[SerializeField] private float _jumpGracePeriod = 0.1f;
 	[SerializeField] private float _timeBetweenJumps = 0.1f;
+	[SerializeField] private float _exitSpacecraftHeight = 1.0f;
 
 	[Header("Anim")]
 	[SerializeField] private float _raycastHeightOffset = 1.0f;
@@ -31,6 +32,17 @@ public class Player : MonoBehaviour
 	private void Awake()
 	{
 		_rb = GetComponent<Rigidbody>();
+		Globals.RegisterPlayer(this);
+		Globals.OnStartDriving -= OnStartDriving;
+		Globals.OnStartDriving += OnStartDriving;
+		Globals.OnStopDriving -= OnStopDriving;
+		Globals.OnStopDriving += OnStopDriving;
+	}
+
+	private void OnDestroy()
+	{
+		Globals.OnStartDriving -= OnStartDriving;
+		Globals.OnStopDriving -= OnStopDriving;
 	}
 
 	private void OnEnable()
@@ -40,6 +52,17 @@ public class Player : MonoBehaviour
 		_timeLastGrounded = Time.time;
 		_timeLastJumped = 0.0f;
 		_timeLastPressedJump = 0.0f;
+	}
+
+	private void OnStartDriving(Spacecraft craft)
+	{
+		gameObject.SetActive(false);
+	}
+
+	private void OnStopDriving(Spacecraft craft)
+	{
+		transform.position = craft.transform.position + _exitSpacecraftHeight * Vector3.up;
+		gameObject.SetActive(true);
 	}
 
 	private void Update()
@@ -60,7 +83,7 @@ public class Player : MonoBehaviour
 		float heightAboveGround = transform.position.y;
 		Vector3 basePosition = transform.position;
 		Ray ray = new Ray(transform.position + _raycastHeightOffset * Vector3.up, Vector3.down);
-		if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, Globals.MaskEnvironment))
+		if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, Globals.MaskEnvironment | Globals.MaskSpacecraft))
 		{
 			if (hit.distance < _raycastHeightOffset + _heightConsideredGrounded)
 			{

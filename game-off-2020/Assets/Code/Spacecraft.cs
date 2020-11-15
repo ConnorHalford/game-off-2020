@@ -76,6 +76,12 @@ public class Spacecraft : MonoBehaviour
 	{
 		_rb = GetComponent<Rigidbody>();
 		ChangeModel(_model);
+		Globals.RegisterSpacecraft(this);
+	}
+
+	private void OnDestroy()
+	{
+		Globals.DeregisterSpacecraft(this);
 	}
 
 	private void Update()
@@ -216,12 +222,14 @@ public class Spacecraft : MonoBehaviour
 	{
 		_targetHeight = _heightWhenDriving;
 		_driving = true;
+		Globals.StartDriving(this);
 	}
 
 	private void StopDriving()
 	{
 		_targetHeight = _heightWhenParked;
 		_driving = false;
+		Globals.StopDriving();
 	}
 
 	private void ChangeModel(Model model)
@@ -252,7 +260,7 @@ public class Spacecraft : MonoBehaviour
 		Gizmos.DrawSphere(raycast.Highlight, _debugRadius);
 	}
 
-	private void OnDrawGizmos()
+	private void OnDrawGizmosSelected()
 	{
 		Gizmos.color = _debugSphereColor;
 		Gizmos.DrawSphere(_frontLeftAnchor.position, _debugRadius);

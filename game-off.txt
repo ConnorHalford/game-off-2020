@@ -20,3 +20,9 @@ Billionaires have colonized, commercialized and privatized the moon. Your only s
 - Sound effects
 - Music
 - Main menu
+
+=== BUGS
+- Holding a move input in mid-air towards a wall pins the player to that wall
+- Fix spacecraft bobbing while player is standing on it
+- Fix spacecraft freaking out when moving horizontally over ramps
+- Some weirdness when jumping on vehicles on ramps
