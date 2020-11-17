@@ -6,10 +6,13 @@ public static class Globals
 	private static int _maskEnvironment = 0;
 	private static int _maskSpacecraft = 0;
 	private static Controls _controls = null;
+
 	private static Camera _camera = null;
 	private static Player _player = null;
 	private static Spacecraft _driving = null;
 	private static List<Spacecraft> _spacecraft = new List<Spacecraft>();
+
+	private static UIManager _uiManager = null;
 
 	public static int MaskEnvironment { get { return _maskEnvironment; } }
 	public static int MaskSpacecraft { get { return _maskSpacecraft; } }
@@ -20,6 +23,8 @@ public static class Globals
 	public static Spacecraft Driving { get { return _driving; } }
 	public static bool IsDriving { get { return _driving != null; } }
 	public static List<Spacecraft> Spacecraft { get { return _spacecraft; } }
+
+	public static UIManager UIManager { get { return _uiManager; } }
 
 	public static event System.Action<Spacecraft> OnStartDriving = null;
 	public static event System.Action<Spacecraft> OnStopDriving = null;
@@ -67,5 +72,10 @@ public static class Globals
 		{
 			OnStopDriving(exiting);
 		}
+	}
+
+	public static void RegisterUIManager(UIManager manager)
+	{
+		_uiManager = manager;
 	}
 }

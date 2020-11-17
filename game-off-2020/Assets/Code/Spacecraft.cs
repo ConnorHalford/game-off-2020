@@ -44,6 +44,7 @@ public class Spacecraft : MonoBehaviour
 	[SerializeField] private GameObject[] _modelGOs = new GameObject[System.Enum.GetValues(typeof(Model)).Length];
 	[SerializeField] private Transform _modelRoot = null;
 	[SerializeField] private Color[] _colors = null;
+	[SerializeField] private Camera _previewCamera = null;
 
 	[Header("Height")]
 	[SerializeField] private Transform _frontLeftAnchor = null;
@@ -304,7 +305,46 @@ public class Spacecraft : MonoBehaviour
 		_outline.transform.localScale = _outlineScale * Vector3.one;
 	}
 
-# if UNITY_EDITOR
+	private Texture2D CreatePreview()
+	{
+		// Setup
+		int resolution = 256;
+		RenderTexture renderTex = RenderTexture.GetTemporary(resolution, resolution, depthBuffer: 24,
+			RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default, antiAliasing: 2);
+		RenderTexture prevActive = RenderTexture.active;
+		RenderTexture.active = renderTex;
+		_previewCamera.gameObject.SetActive(true);
+		_previewCamera.aspect = 1.0f;
+		_previewCamera.targetTexture = renderTex;
+		bool enableOutline = _outline.gameObject.activeInHierarchy;
+		if (enableOutline)
+		{
+			_outline.gameObject.SetActive(false);
+		}
+		Vector3 modelPosition = _modelRoot.transform.position;
+		_modelRoot.transform.position = 200.0f * Vector3.down;
+
+		// Render
+		_previewCamera.Render();
+		Texture2D tex = new Texture2D(resolution, resolution, TextureFormat.ARGB32, mipChain: false);
+		tex.ReadPixels(new Rect(0, 0, resolution, resolution), 0, 0);
+		tex.Apply();
+
+		// Cleanup
+		_previewCamera.targetTexture = null;
+		_previewCamera.gameObject.SetActive(false);
+		RenderTexture.active = prevActive;
+		RenderTexture.ReleaseTemporary(renderTex);
+		if (enableOutline)
+		{
+			_outline.gameObject.SetActive(true);
+		}
+		_modelRoot.transform.position = modelPosition;
+
+		return tex;
+	}
+
+#if UNITY_EDITOR
 	private void DrawDebugRaycast(DebugRaycastData raycast)
 	{
 		Gizmos.color = _debugSphereColor;

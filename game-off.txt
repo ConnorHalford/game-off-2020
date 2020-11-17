@@ -12,12 +12,27 @@ Billionaires have colonized, commercialized and privatized the moon. Your only s
 - You need to retrieve the right vehicle and drive it back to them, if correct they will drive off
 
 === TODO
+- Spacecraft UI
+	- RenderTexture preview of custom colored craft
+	- Driver portrait
+	- Timer bar ticking down (no visible seconds count)
+	- Arrival timer ticks down significantly more slowly than departure timer, so player can choose to let them wait and give themself breathing room
 - NPC arrival/departure
-- Spacecraft damage
+	- Left hand UI is arrivals, right hand UI is departures
+	- Arrivals queue horizontally, have collision disabled other than front one with NPC standing next to it, front one is only enterable one
+	- Upon entering NPC jumps offscreen and craft is added to list of potential departures (with minimum time before departure)
+	- Departures always leave from the same spot, further along than the arrival queue
+	- NPC stands next to spot, if correct vehicle is inside exit area, NPC jumps in, collision disabled, floats upward offscreen
+		- Only one NPC is visible at front of arrival queue, but can have multiple NPCs waiting at departures so player can choose which order to serve them
+	- If a timer runs out for arrival or departure you lose a live, NPC jumps into vehicle (even if parked somewhere), collision turns off, floats upward offscreen
+	- Global timer represents your shift, goal is to valet as many craft as possible, so you control your own difficulty through the rate at which you accept arrivals
+	- Main menu has 3 difficulties: hardcore (1 live), regular (5 lives), endless (infinity lives)
+	- Get 1M spacebucks for each successful departure, get fired if you lose all your lives (0 spacebucks)
+
+- Main menu
 - Particle effects
 - Sound effects
 - Music
-- Main menu
 - Maybe have different spacecraft have different handling
 
 === BUGS
