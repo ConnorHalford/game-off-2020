@@ -595,6 +595,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: c6cb09cc634705a429b6bf09bc990d4b, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c6cb09cc634705a429b6bf09bc990d4b, type: 3}
       propertyPath: m_Name
       value: craft_speederA
@@ -665,6 +669,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 45cd919f60e47c5458c48a65b1c7614d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 45cd919f60e47c5458c48a65b1c7614d, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 45cd919f60e47c5458c48a65b1c7614d, type: 3}
       propertyPath: m_Name
@@ -737,6 +745,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 3a57ab4d945fa994f8cf2e2742b28ec5, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 3a57ab4d945fa994f8cf2e2742b28ec5, type: 3}
       propertyPath: m_Name
       value: craft_speederD
@@ -807,6 +819,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 0db5a0a5cc10d5b4c8f6cf2276d404a2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 0db5a0a5cc10d5b4c8f6cf2276d404a2, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0db5a0a5cc10d5b4c8f6cf2276d404a2, type: 3}
       propertyPath: m_Name
@@ -879,6 +895,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: e0b467c19c63161458939f338d0fbb05, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e0b467c19c63161458939f338d0fbb05, type: 3}
       propertyPath: m_Name
       value: craft_cargoB
@@ -949,6 +969,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 83dfd77cd608bde4d9c6b227d463dfac, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 83dfd77cd608bde4d9c6b227d463dfac, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 83dfd77cd608bde4d9c6b227d463dfac, type: 3}
       propertyPath: m_Name
@@ -1021,6 +1045,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 91062e5346d91a24a97949a4ee82bc51, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 91062e5346d91a24a97949a4ee82bc51, type: 3}
       propertyPath: m_Name
       value: craft_speederB
@@ -1091,6 +1119,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 1dac122701a6685409b9327e58ed7289, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 1dac122701a6685409b9327e58ed7289, type: 3}
+      propertyPath: m_CastShadows
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 1dac122701a6685409b9327e58ed7289, type: 3}
       propertyPath: m_Name

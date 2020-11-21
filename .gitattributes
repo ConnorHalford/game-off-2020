@@ -1,115 +1,115 @@
 * text=auto
 
 ### 3D models ###
-*.3dm                   filter=lfs diff=lfs merge=lfs -text lockable
-*.3ds                   filter=lfs diff=lfs merge=lfs -text lockable
-*.abc                   filter=lfs diff=lfs merge=lfs -text lockable
-*.blend                 filter=lfs diff=lfs merge=lfs -text lockable
-*.c4d                   filter=lfs diff=lfs merge=lfs -text lockable
-*.collada               filter=lfs diff=lfs merge=lfs -text lockable
-*.dae                   filter=lfs diff=lfs merge=lfs -text lockable
-*.dfx                   filter=lfs diff=lfs merge=lfs -text lockable
-*.dxf                   filter=lfs diff=lfs merge=lfs -text lockable
-*.fbx                   filter=lfs diff=lfs merge=lfs -text lockable
-*.FBX                   filter=lfs diff=lfs merge=lfs -text lockable
-*.jas                   filter=lfs diff=lfs merge=lfs -text lockable
-*.lwo                   filter=lfs diff=lfs merge=lfs -text lockable
-*.lwo2                  filter=lfs diff=lfs merge=lfs -text lockable
-*.lws                   filter=lfs diff=lfs merge=lfs -text lockable
-*.lxo                   filter=lfs diff=lfs merge=lfs -text lockable
-*.ma                    filter=lfs diff=lfs merge=lfs -text lockable
-*.max                   filter=lfs diff=lfs merge=lfs -text lockable
-*.mb                    filter=lfs diff=lfs merge=lfs -text lockable
-*.obj                   filter=lfs diff=lfs merge=lfs -text lockable
-*.ply                   filter=lfs diff=lfs merge=lfs -text lockable
-*.skp                   filter=lfs diff=lfs merge=lfs -text lockable
-*.stl                   filter=lfs diff=lfs merge=lfs -text lockable
-*.ztl                   filter=lfs diff=lfs merge=lfs -text lockable
+*.3dm                   filter=lfs diff=lfs merge=lfs -text
+*.3ds                   filter=lfs diff=lfs merge=lfs -text
+*.abc                   filter=lfs diff=lfs merge=lfs -text
+*.blend                 filter=lfs diff=lfs merge=lfs -text
+*.c4d                   filter=lfs diff=lfs merge=lfs -text
+*.collada               filter=lfs diff=lfs merge=lfs -text
+*.dae                   filter=lfs diff=lfs merge=lfs -text
+*.dfx                   filter=lfs diff=lfs merge=lfs -text
+*.dxf                   filter=lfs diff=lfs merge=lfs -text
+*.fbx                   filter=lfs diff=lfs merge=lfs -text
+*.FBX                   filter=lfs diff=lfs merge=lfs -text
+*.jas                   filter=lfs diff=lfs merge=lfs -text
+*.lwo                   filter=lfs diff=lfs merge=lfs -text
+*.lwo2                  filter=lfs diff=lfs merge=lfs -text
+*.lws                   filter=lfs diff=lfs merge=lfs -text
+*.lxo                   filter=lfs diff=lfs merge=lfs -text
+*.ma                    filter=lfs diff=lfs merge=lfs -text
+*.max                   filter=lfs diff=lfs merge=lfs -text
+*.mb                    filter=lfs diff=lfs merge=lfs -text
+*.obj                   filter=lfs diff=lfs merge=lfs -text
+*.ply                   filter=lfs diff=lfs merge=lfs -text
+*.skp                   filter=lfs diff=lfs merge=lfs -text
+*.stl                   filter=lfs diff=lfs merge=lfs -text
+*.ztl                   filter=lfs diff=lfs merge=lfs -text
 
 ### Audio ###
-*.aif                   filter=lfs diff=lfs merge=lfs -text lockable
-*.aiff                  filter=lfs diff=lfs merge=lfs -text lockable
-*.it                    filter=lfs diff=lfs merge=lfs -text lockable
-*.mod                   filter=lfs diff=lfs merge=lfs -text lockable
-*.mp3                   filter=lfs diff=lfs merge=lfs -text lockable
-*.ogg                   filter=lfs diff=lfs merge=lfs -text lockable
-*.s3m                   filter=lfs diff=lfs merge=lfs -text lockable
-*.wav                   filter=lfs diff=lfs merge=lfs -text lockable
-*.xm                    filter=lfs diff=lfs merge=lfs -text lockable
+*.aif                   filter=lfs diff=lfs merge=lfs -text
+*.aiff                  filter=lfs diff=lfs merge=lfs -text
+*.it                    filter=lfs diff=lfs merge=lfs -text
+*.mod                   filter=lfs diff=lfs merge=lfs -text
+*.mp3                   filter=lfs diff=lfs merge=lfs -text
+*.ogg                   filter=lfs diff=lfs merge=lfs -text
+*.s3m                   filter=lfs diff=lfs merge=lfs -text
+*.wav                   filter=lfs diff=lfs merge=lfs -text
+*.xm                    filter=lfs diff=lfs merge=lfs -text
 
 ### Fonts ###
-*.otf                   filter=lfs diff=lfs merge=lfs -text lockable
-*.ttf                   filter=lfs diff=lfs merge=lfs -text lockable
+*.otf                   filter=lfs diff=lfs merge=lfs -text
+*.ttf                   filter=lfs diff=lfs merge=lfs -text
 
 ### Images ###
-*.ai                    filter=lfs diff=lfs merge=lfs -text lockable
-*.bmp                   filter=lfs diff=lfs merge=lfs -text lockable
-*.cubemap               filter=lfs diff=lfs merge=lfs -text lockable
-*.dds                   filter=lfs diff=lfs merge=lfs -text lockable
-*.exr                   filter=lfs diff=lfs merge=lfs -text lockable
-*.gif                   filter=lfs diff=lfs merge=lfs -text lockable
-*.hdr                   filter=lfs diff=lfs merge=lfs -text lockable
-*.iff                   filter=lfs diff=lfs merge=lfs -text lockable
-*.jpeg                  filter=lfs diff=lfs merge=lfs -text lockable
-*.jpg                   filter=lfs diff=lfs merge=lfs -text lockable
-*.pict                  filter=lfs diff=lfs merge=lfs -text lockable
-*.png                   filter=lfs diff=lfs merge=lfs -text lockable
-*.psd                   filter=lfs diff=lfs merge=lfs -text lockable
-*.tga                   filter=lfs diff=lfs merge=lfs -text lockable
-*.tif                   filter=lfs diff=lfs merge=lfs -text lockable
-*.tiff                  filter=lfs diff=lfs merge=lfs -text lockable
-*.xcf                   filter=lfs diff=lfs merge=lfs -text lockable
+*.ai                    filter=lfs diff=lfs merge=lfs -text
+*.bmp                   filter=lfs diff=lfs merge=lfs -text
+*.cubemap               filter=lfs diff=lfs merge=lfs -text
+*.dds                   filter=lfs diff=lfs merge=lfs -text
+*.exr                   filter=lfs diff=lfs merge=lfs -text
+*.gif                   filter=lfs diff=lfs merge=lfs -text
+*.hdr                   filter=lfs diff=lfs merge=lfs -text
+*.iff                   filter=lfs diff=lfs merge=lfs -text
+*.jpeg                  filter=lfs diff=lfs merge=lfs -text
+*.jpg                   filter=lfs diff=lfs merge=lfs -text
+*.pict                  filter=lfs diff=lfs merge=lfs -text
+*.png                   filter=lfs diff=lfs merge=lfs -text
+*.psd                   filter=lfs diff=lfs merge=lfs -text
+*.tga                   filter=lfs diff=lfs merge=lfs -text
+*.tif                   filter=lfs diff=lfs merge=lfs -text
+*.tiff                  filter=lfs diff=lfs merge=lfs -text
+*.xcf                   filter=lfs diff=lfs merge=lfs -text
 
 ### Video ###
-*.asf                   filter=lfs diff=lfs merge=lfs -text lockable
-*.avi                   filter=lfs diff=lfs merge=lfs -text lockable
-*.mov                   filter=lfs diff=lfs merge=lfs -text lockable
-*.mp4                   filter=lfs diff=lfs merge=lfs -text lockable
-*.mpeg                  filter=lfs diff=lfs merge=lfs -text lockable
-*.mpg                   filter=lfs diff=lfs merge=lfs -text lockable
+*.asf                   filter=lfs diff=lfs merge=lfs -text
+*.avi                   filter=lfs diff=lfs merge=lfs -text
+*.mov                   filter=lfs diff=lfs merge=lfs -text
+*.mp4                   filter=lfs diff=lfs merge=lfs -text
+*.mpeg                  filter=lfs diff=lfs merge=lfs -text
+*.mpg                   filter=lfs diff=lfs merge=lfs -text
 
 ### Documents ###
-*.pdf                   filter=lfs diff=lfs merge=lfs -text lockable
+*.pdf                   filter=lfs diff=lfs merge=lfs -text
 
 ### Build artifacts ###
-*.apk                   filter=lfs diff=lfs merge=lfs -text lockable
-*.app                   filter=lfs diff=lfs merge=lfs -text lockable
-*.dll                   filter=lfs diff=lfs merge=lfs -text lockable
-*.elf                   filter=lfs diff=lfs merge=lfs -text lockable
-*.exe                   filter=lfs diff=lfs merge=lfs -text lockable
-*.mdb                   filter=lfs diff=lfs merge=lfs -text lockable
-*.pdb                   filter=lfs diff=lfs merge=lfs -text lockable
-*.x86                   filter=lfs diff=lfs merge=lfs -text lockable
-*.x86_64                filter=lfs diff=lfs merge=lfs -text lockable
+*.apk                   filter=lfs diff=lfs merge=lfs -text
+*.app                   filter=lfs diff=lfs merge=lfs -text
+*.dll                   filter=lfs diff=lfs merge=lfs -text
+*.elf                   filter=lfs diff=lfs merge=lfs -text
+*.exe                   filter=lfs diff=lfs merge=lfs -text
+*.mdb                   filter=lfs diff=lfs merge=lfs -text
+*.pdb                   filter=lfs diff=lfs merge=lfs -text
+*.x86                   filter=lfs diff=lfs merge=lfs -text
+*.x86_64                filter=lfs diff=lfs merge=lfs -text
 
 ### Archives ###
-*.7z                    filter=lfs diff=lfs merge=lfs -text lockable
-*.gz                    filter=lfs diff=lfs merge=lfs -text lockable
-*.rar                   filter=lfs diff=lfs merge=lfs -text lockable
-*.tar                   filter=lfs diff=lfs merge=lfs -text lockable
-*.unitypackage          filter=lfs diff=lfs merge=lfs -text lockable
-*.zip                   filter=lfs diff=lfs merge=lfs -text lockable
+*.7z                    filter=lfs diff=lfs merge=lfs -text
+*.gz                    filter=lfs diff=lfs merge=lfs -text
+*.rar                   filter=lfs diff=lfs merge=lfs -text
+*.tar                   filter=lfs diff=lfs merge=lfs -text
+*.unitypackage          filter=lfs diff=lfs merge=lfs -text
+*.zip                   filter=lfs diff=lfs merge=lfs -text
 
 ### Unity YAML files ###
-*.anim                  diff merge=unityyamlmerge -text lockable
+*.anim                  diff merge=unityyamlmerge -text
 *.asset                 diff merge=unityyamlmerge -text
-*.brush                 diff merge=unityyamlmerge -text lockable
-*.controller            diff merge=unityyamlmerge -text lockable
-*.flare                 diff merge=unityyamlmerge -text lockable
+*.brush                 diff merge=unityyamlmerge -text
+*.controller            diff merge=unityyamlmerge -text
+*.flare                 diff merge=unityyamlmerge -text
 *.fontsettings          diff merge=unityyamlmerge -text
-*.giparams              diff merge=unityyamlmerge -text lockable
-*.guiskin               diff merge=unityyamlmerge -text lockable
-*.mask                  diff merge=unityyamlmerge -text lockable
-*.mat                   diff merge=unityyamlmerge -text lockable
+*.giparams              diff merge=unityyamlmerge -text
+*.guiskin               diff merge=unityyamlmerge -text
+*.mask                  diff merge=unityyamlmerge -text
+*.mat                   diff merge=unityyamlmerge -text
 *.meta                  diff merge=unityyamlmerge -text
-*.mixer                 diff merge=unityyamlmerge -text lockable
-*.overrideController    diff merge=unityyamlmerge -text lockable
-*.physicMaterial        diff merge=unityyamlmerge -text lockable
-*.physicsMaterial2D     diff merge=unityyamlmerge -text lockable
-*.playable              diff merge=unityyamlmerge -text lockable
-*.prefab                diff merge=unityyamlmerge -text lockable
-*.renderTexture         diff merge=unityyamlmerge -text lockable
-*.shadervariants        diff merge=unityyamlmerge -text lockable
+*.mixer                 diff merge=unityyamlmerge -text
+*.overrideController    diff merge=unityyamlmerge -text
+*.physicMaterial        diff merge=unityyamlmerge -text
+*.physicsMaterial2D     diff merge=unityyamlmerge -text
+*.playable              diff merge=unityyamlmerge -text
+*.prefab                diff merge=unityyamlmerge -text
+*.renderTexture         diff merge=unityyamlmerge -text
+*.shadervariants        diff merge=unityyamlmerge -text
 *.spriteatlas           diff merge=unityyamlmerge -text
-*.terrainlayer          diff merge=unityyamlmerge -text lockable
-*.unity                 diff merge=unityyamlmerge -text lockable
+*.terrainlayer          diff merge=unityyamlmerge -text
+*.unity                 diff merge=unityyamlmerge -text
