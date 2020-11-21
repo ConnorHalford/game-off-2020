@@ -40,11 +40,11 @@ public class Spacecraft : MonoBehaviour
 #endif	// UNITY_EDITOR
 
 	[Header("Model")]
-	[SerializeField] private Model _model = Model.CargoA;
 	[SerializeField] private GameObject[] _modelGOs = new GameObject[System.Enum.GetValues(typeof(Model)).Length];
 	[SerializeField] private Transform _modelRoot = null;
 	[SerializeField] private Color[] _colors = null;
 	[SerializeField] private Camera _previewCamera = null;
+	[SerializeField] private Sprite[] _ownerSprites = null;
 
 	[Header("Height")]
 	[SerializeField] private Transform _frontLeftAnchor = null;
@@ -77,16 +77,22 @@ public class Spacecraft : MonoBehaviour
 	private float _timeStartedDriving = -1.0f;
 	private float _targetHeight = 0.0f;
 	private Vector2 _moveInput = Vector2.zero;
+
+	private Model _model = Model.CargoA;
 	private Model _modelPrevFrame = Model.CargoA;
+	private CharacterAnimator.CharacterSelection _owner = CharacterAnimator.CharacterSelection.Beige;
 	private Mesh _outlineMesh = null;
 
-	private bool IsDriving { get { return _timeStartedDriving >= 0.0f; } }
+	public bool IsDriving { get { return _timeStartedDriving >= 0.0f; } }
+	public CharacterAnimator.CharacterSelection Owner { get { return _owner; } }
 
-	private void Awake()
+	private void Start()
 	{
 		_rb = GetComponent<Rigidbody>();
+		_model = (Model)Random.Range(0, System.Enum.GetValues(typeof(Model)).Length);
 		ChangeModel(_model);
 		SetOutlineVisible(false);
+		_owner = CharacterAnimator.GetRandomNPC();
 		Globals.RegisterSpacecraft(this);
 	}
 
@@ -305,7 +311,7 @@ public class Spacecraft : MonoBehaviour
 		_outline.transform.localScale = _outlineScale * Vector3.one;
 	}
 
-	private Texture2D CreatePreview()
+	public Texture2D CreatePreview()
 	{
 		// Setup
 		int resolution = 256;

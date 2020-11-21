@@ -26,6 +26,8 @@ public static class Globals
 
 	public static UIManager UIManager { get { return _uiManager; } }
 
+	public static event System.Action<Spacecraft> OnRegisterSpacecraft = null;
+	public static event System.Action<Spacecraft> OnDeregisterSpacecraft = null;
 	public static event System.Action<Spacecraft> OnStartDriving = null;
 	public static event System.Action<Spacecraft> OnStopDriving = null;
 
@@ -48,11 +50,19 @@ public static class Globals
 	public static void RegisterSpacecraft(Spacecraft craft)
 	{
 		_spacecraft.Add(craft);
+		if (OnRegisterSpacecraft != null)
+		{
+			OnRegisterSpacecraft(craft);
+		}
 	}
 
 	public static void DeregisterSpacecraft(Spacecraft craft)
 	{
 		_spacecraft.Remove(craft);
+		if (OnDeregisterSpacecraft != null)
+		{
+			OnDeregisterSpacecraft(craft);
+		}
 	}
 
 	public static void StartDriving(Spacecraft craft)

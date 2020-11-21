@@ -53,4 +53,16 @@ public class CharacterAnimator : MonoBehaviour
 			_animator.Play(anim);
 		}
 	}
+
+	public static CharacterSelection GetRandomNPC()
+	{
+		CharacterSelection[] npcs = {
+			CharacterSelection.Beige,
+			CharacterSelection.Blue,
+			//CharacterSelection.Green,
+			CharacterSelection.Pink,
+			CharacterSelection.Yellow
+		};
+		return npcs[Random.Range(0, npcs.Length)];
+	}
 }

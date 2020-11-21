@@ -28,12 +28,16 @@ Billionaires have colonized, commercialized and privatized the moon. Your only s
 	- Global timer represents your shift, goal is to valet as many craft as possible, so you control your own difficulty through the rate at which you accept arrivals
 	- Main menu has 3 difficulties: hardcore (1 live), regular (5 lives), endless (infinity lives)
 	- Get 1M spacebucks for each successful departure, get fired if you lose all your lives (0 spacebucks)
+- Collision improvements
+	- Large invisible corners
+	- Bottom left / bottom right of map
+	- Rapid tilt when moving sideways over ramps
+- Different handling for different spacecraft models
 
 - Main menu
 - Particle effects
 - Sound effects
 - Music
-- Maybe have different spacecraft have different handling
 
 === BUGS
 - Holding a move input in mid-air towards a wall pins the player to that wall
