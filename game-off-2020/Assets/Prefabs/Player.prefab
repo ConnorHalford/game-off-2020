@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1508095571815700044}
   - component: {fileID: 2945493508620789527}
   - component: {fileID: 3326943747135174536}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,6 +53,8 @@ MonoBehaviour:
   _jumpForce: 15
   _jumpGracePeriod: 0.1
   _timeBetweenJumps: 0.1
+  _exitSpacecraftHeight: 1
+  _enterSpacecraftDistance: 3
   _raycastHeightOffset: 1
   _heightConsideredGrounded: 0.2
   _idleThreshold: 0.1
@@ -95,6 +97,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4284744555990272237}
     m_Modifications:
+    - target: {fileID: 1679795981750736878, guid: db5c006b393b8b443823e809ad6fb12c, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 2168569663816543710, guid: db5c006b393b8b443823e809ad6fb12c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -142,6 +148,14 @@ PrefabInstance:
     - target: {fileID: 6884438115336037829, guid: db5c006b393b8b443823e809ad6fb12c, type: 3}
       propertyPath: m_Name
       value: Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 6884438115336037829, guid: db5c006b393b8b443823e809ad6fb12c, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 9047931876678869910, guid: db5c006b393b8b443823e809ad6fb12c, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: db5c006b393b8b443823e809ad6fb12c, type: 3}

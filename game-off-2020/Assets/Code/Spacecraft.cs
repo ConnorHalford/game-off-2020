@@ -40,7 +40,7 @@ public class Spacecraft : MonoBehaviour
 #endif	// UNITY_EDITOR
 
 	[Header("Model")]
-	[SerializeField] private GameObject[] _modelGOs = new GameObject[System.Enum.GetValues(typeof(Model)).Length];
+	[SerializeField] private MeshCollider[] _models = new MeshCollider[System.Enum.GetValues(typeof(Model)).Length];
 	[SerializeField] private Transform _modelRoot = null;
 	[SerializeField] private Color[] _colors = null;
 	[SerializeField] private Camera _previewCamera = null;
@@ -85,20 +85,19 @@ public class Spacecraft : MonoBehaviour
 
 	public bool IsDriving { get { return _timeStartedDriving >= 0.0f; } }
 	public CharacterAnimator.CharacterSelection Owner { get { return _owner; } }
+	public float HeightWhenDriving { get { return _heightWhenDriving; } }
 
-	private void Start()
+	public void Spawn()
 	{
 		_rb = GetComponent<Rigidbody>();
 		_model = (Model)Random.Range(0, System.Enum.GetValues(typeof(Model)).Length);
 		ChangeModel(_model);
 		SetOutlineVisible(false);
 		_owner = CharacterAnimator.GetRandomNPC();
-		Globals.RegisterSpacecraft(this);
 	}
 
 	private void OnDestroy()
 	{
-		Globals.DeregisterSpacecraft(this);
 		Destroy(_outlineMesh);
 	}
 
@@ -256,17 +255,17 @@ public class Spacecraft : MonoBehaviour
 		// Enable correct model
 		_model = model;
 		_modelPrevFrame = _model;
-		_modelGOs[(int)Model.CargoA].SetActive(_model == Model.CargoA);
-		_modelGOs[(int)Model.CargoB].SetActive(_model == Model.CargoB);
-		_modelGOs[(int)Model.Miner].SetActive(_model == Model.Miner);
-		_modelGOs[(int)Model.Racer].SetActive(_model == Model.Racer);
-		_modelGOs[(int)Model.SpeederA].SetActive(_model == Model.SpeederA);
-		_modelGOs[(int)Model.SpeederB].SetActive(_model == Model.SpeederB);
-		_modelGOs[(int)Model.SpeederC].SetActive(_model == Model.SpeederC);
-		_modelGOs[(int)Model.SpeederD].SetActive(_model == Model.SpeederD);
+		_models[(int)Model.CargoA].gameObject.SetActive(_model == Model.CargoA);
+		_models[(int)Model.CargoB].gameObject.SetActive(_model == Model.CargoB);
+		_models[(int)Model.Miner].gameObject.SetActive(_model == Model.Miner);
+		_models[(int)Model.Racer].gameObject.SetActive(_model == Model.Racer);
+		_models[(int)Model.SpeederA].gameObject.SetActive(_model == Model.SpeederA);
+		_models[(int)Model.SpeederB].gameObject.SetActive(_model == Model.SpeederB);
+		_models[(int)Model.SpeederC].gameObject.SetActive(_model == Model.SpeederC);
+		_models[(int)Model.SpeederD].gameObject.SetActive(_model == Model.SpeederD);
 
 		// Tint model to random color
-		MeshRenderer renderer = _modelGOs[(int)_model].GetComponent<MeshRenderer>();
+		MeshRenderer renderer = _models[(int)_model].GetComponent<MeshRenderer>();
 		Material[] sharedMaterials = renderer.sharedMaterials;
 		int numSharedMaterials = sharedMaterials.Length;
 		int tintMaterialIndex = -1;
@@ -294,7 +293,7 @@ public class Spacecraft : MonoBehaviour
 			Destroy(_outlineMesh);
 			_outlineMesh = null;
 		}
-		Mesh modelMesh = _modelGOs[(int)_model].GetComponent<MeshFilter>().sharedMesh;
+		Mesh modelMesh = _models[(int)_model].GetComponent<MeshFilter>().sharedMesh;
 		_outlineMesh = new Mesh();
 		int numTris = modelMesh.triangles.Length;
 		int[] invertedTris = new int[numTris];
@@ -309,6 +308,18 @@ public class Spacecraft : MonoBehaviour
 		_outlineMesh.triangles = invertedTris;
 		_outline.sharedMesh = _outlineMesh;
 		_outline.transform.localScale = _outlineScale * Vector3.one;
+
+		DisableCollider();
+	}
+
+	public void EnableCollider()
+	{
+		_models[(int)_model].enabled = true;
+	}
+
+	public void DisableCollider()
+	{
+		_models[(int)_model].enabled = false;
 	}
 
 	public Texture2D CreatePreview()

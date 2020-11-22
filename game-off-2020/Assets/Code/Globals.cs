@@ -13,6 +13,7 @@ public static class Globals
 	private static List<Spacecraft> _spacecraft = new List<Spacecraft>();
 
 	private static UIManager _uiManager = null;
+	private static Game _game = null;
 
 	public static int MaskEnvironment { get { return _maskEnvironment; } }
 	public static int MaskSpacecraft { get { return _maskSpacecraft; } }
@@ -22,12 +23,10 @@ public static class Globals
 	public static Player Player { get { return _player; } }
 	public static Spacecraft Driving { get { return _driving; } }
 	public static bool IsDriving { get { return _driving != null; } }
-	public static List<Spacecraft> Spacecraft { get { return _spacecraft; } }
 
 	public static UIManager UIManager { get { return _uiManager; } }
+	public static Game Game { get { return _game; } }
 
-	public static event System.Action<Spacecraft> OnRegisterSpacecraft = null;
-	public static event System.Action<Spacecraft> OnDeregisterSpacecraft = null;
 	public static event System.Action<Spacecraft> OnStartDriving = null;
 	public static event System.Action<Spacecraft> OnStopDriving = null;
 
@@ -45,24 +44,6 @@ public static class Globals
 	public static void RegisterPlayer(Player player)
 	{
 		_player = player;
-	}
-
-	public static void RegisterSpacecraft(Spacecraft craft)
-	{
-		_spacecraft.Add(craft);
-		if (OnRegisterSpacecraft != null)
-		{
-			OnRegisterSpacecraft(craft);
-		}
-	}
-
-	public static void DeregisterSpacecraft(Spacecraft craft)
-	{
-		_spacecraft.Remove(craft);
-		if (OnDeregisterSpacecraft != null)
-		{
-			OnDeregisterSpacecraft(craft);
-		}
 	}
 
 	public static void StartDriving(Spacecraft craft)
@@ -87,5 +68,10 @@ public static class Globals
 	public static void RegisterUIManager(UIManager manager)
 	{
 		_uiManager = manager;
+	}
+
+	public static void RegisterGame(Game game)
+	{
+		_game = game;
 	}
 }

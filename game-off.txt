@@ -13,12 +13,13 @@ Billionaires have colonized, commercialized and privatized the moon. Your only s
 
 === TODO
 - Spacecraft UI
-	- RenderTexture preview of custom colored craft
-	- Driver portrait
 	- Timer bar ticking down (no visible seconds count)
 	- Arrival timer ticks down significantly more slowly than departure timer, so player can choose to let them wait and give themself breathing room
 - NPC arrival/departure
-	- Left hand UI is arrivals, right hand UI is departures
+	- The tip you receive is based on how much of the timer is remaining
+	- No lives, no game over, just get highest score possible in a single shift
+	- Endless mode is just no shift timer
+
 	- Arrivals queue horizontally, have collision disabled other than front one with NPC standing next to it, front one is only enterable one
 	- Upon entering NPC jumps offscreen and craft is added to list of potential departures (with minimum time before departure)
 	- Departures always leave from the same spot, further along than the arrival queue
@@ -44,3 +45,4 @@ Billionaires have colonized, commercialized and privatized the moon. Your only s
 - Fix spacecraft bobbing while player is standing on it
 - Fix spacecraft freaking out when moving horizontally over ramps
 - Some weirdness when jumping on vehicles on ramps
+- World-space arrivals/departures text doesn't receive shadows

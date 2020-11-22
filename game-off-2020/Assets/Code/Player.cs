@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
@@ -88,16 +89,17 @@ public class Player : MonoBehaviour
 		// Outline nearest spacecraft
 		Spacecraft nearestCraft = null;
 		float nearestDistSqr = Mathf.Infinity;
-		int numSpacecraft = Globals.Spacecraft.Count;
+		List<Spacecraft> drivables = Globals.Game.AllDrivableCraft;
+		int numSpacecraft = drivables.Count;
 		Vector3 position = transform.position;
 		for (int i = 0; i < numSpacecraft; ++i)
 		{
-			Vector3 craftPosition = Globals.Spacecraft[i].transform.position;
+			Vector3 craftPosition = drivables[i].transform.position;
 			float distSqr = (craftPosition - position).sqrMagnitude;
 			if (distSqr < nearestDistSqr)
 			{
 				nearestDistSqr = distSqr;
-				nearestCraft = Globals.Spacecraft[i];
+				nearestCraft = drivables[i];
 			}
 		}
 		if (nearestDistSqr > _enterSpacecraftDistance * _enterSpacecraftDistance)
@@ -106,7 +108,7 @@ public class Player : MonoBehaviour
 		}
 		for (int i = 0; i < numSpacecraft; ++i)
 		{
-			Globals.Spacecraft[i].SetOutlineVisible(Globals.Spacecraft[i] == nearestCraft);
+			drivables[i].SetOutlineVisible(drivables[i] == nearestCraft);
 		}
 
 		// Attempt to enter nearest spacecraft

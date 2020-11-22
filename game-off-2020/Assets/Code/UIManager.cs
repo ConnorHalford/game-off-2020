@@ -16,10 +16,9 @@ public class UIManager : MonoBehaviour
 	private void Awake()
 	{
 		Globals.RegisterUIManager(this);
-		Globals.OnRegisterSpacecraft += OnRegisterSpacecraft;
 	}
 
-	private void OnRegisterSpacecraft(Spacecraft craft)
+	public void OnRegisterSpacecraft(Spacecraft craft)
 	{
 		UISpacecraft ui = Instantiate(PrefabUISpacecraft, transform);
 		ui.Populate(craft);
