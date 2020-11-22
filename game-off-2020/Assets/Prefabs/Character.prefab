@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9ffce6646b0a9b4c811e89aa679928d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _character: 2
+  _sprite: {fileID: 6156748783066552770}
   _animator: {fileID: 8398337252670093453}
   _animControllers:
   - {fileID: 22100000, guid: 20b4ea28b0c9afd428d00951321e22d6, type: 2}

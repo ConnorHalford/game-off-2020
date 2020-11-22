@@ -44,7 +44,9 @@ public class Spacecraft : MonoBehaviour
 	[SerializeField] private Transform _modelRoot = null;
 	[SerializeField] private Color[] _colors = null;
 	[SerializeField] private Camera _previewCamera = null;
-	[SerializeField] private Sprite[] _ownerSprites = null;
+
+	[Header("Owner")]
+	[SerializeField] private NPC _npc = null;
 
 	[Header("Height")]
 	[SerializeField] private Transform _frontLeftAnchor = null;
@@ -86,6 +88,7 @@ public class Spacecraft : MonoBehaviour
 	public bool IsDriving { get { return _timeStartedDriving >= 0.0f; } }
 	public CharacterAnimator.CharacterSelection Owner { get { return _owner; } }
 	public float HeightWhenDriving { get { return _heightWhenDriving; } }
+	public NPC NPC { get { return _npc; } }
 
 	public void Spawn()
 	{
@@ -94,6 +97,8 @@ public class Spacecraft : MonoBehaviour
 		ChangeModel(_model);
 		SetOutlineVisible(false);
 		_owner = CharacterAnimator.GetRandomNPC();
+		_npc.SetCharacter(_owner);
+		_npc.Hide();
 	}
 
 	private void OnDestroy()

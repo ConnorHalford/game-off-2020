@@ -8,19 +8,28 @@ public class Game : MonoBehaviour
 		public Spacecraft Craft = null;
 		public float Timer = 0.0f;
 		public float MaxTimer = 0.0f;
+		public bool CraftMovementComplete = false;
+		public bool NPCJumping = false;
+		public bool QueueNextNPCMove = false;
 
 		public float PercentRemaining { get { return Mathf.Max(0.0f, MaxTimer - Timer) / MaxTimer; } }
 	}
 
 	[SerializeField] private Spacecraft _prefabSpacecraft = null;
 
-	[Header("Arrivals")]
+	[Header("Spacecraft Arrival")]
 	[SerializeField] private BoxCollider _markerArrivals = null;
 	[SerializeField] private float _arrivalDuration = 15.0f;
 	[SerializeField] private float _minArrivalTimer = 30.0f;
 	[SerializeField] private float _maxArrivalTimer = 50.0f;
 	[SerializeField] private float _minSpacing = 3.0f;
 	[SerializeField] private int _maxQueuedArrivals = 5;
+
+	[Header("NPC Arrival")]
+	[SerializeField] private Transform _npcArrivalLand = null;
+	[SerializeField] private float _npcArrivalJumpDuration = 1.0f;
+	[SerializeField] private Transform _npcArrivalIndoors = null;
+	[SerializeField] private float _npcArrivalMoveDuration = 1.0f;
 
 	[Header("Departures")]
 	[SerializeField] private BoxCollider _markerDepartures = null;
@@ -35,6 +44,13 @@ public class Game : MonoBehaviour
 	private void Awake()
 	{
 		Globals.RegisterGame(this);
+		Globals.OnStartDriving -= OnStartDriving;
+		Globals.OnStartDriving += OnStartDriving;
+	}
+
+	private void OnDestroy()
+	{
+		Globals.OnStartDriving -= OnStartDriving;
 	}
 
 	private void Start()
@@ -69,7 +85,7 @@ public class Game : MonoBehaviour
 			// Bottommost arrival can only move if there are no drivable spacecraft in the arrival area.
 			// Other arrivals can only move if they wouldn't end up too close to the arrival below them.
 			Flight flight = _arrivals[i];
-			bool canMove = i > 0 || !movementBlocked;
+			bool canMove = (i > 0 || !movementBlocked) && !flight.CraftMovementComplete;
 			if (canMove)
 			{
 				float spacing = flight.Craft.transform.position.y - heightPrevious;
@@ -81,36 +97,53 @@ public class Game : MonoBehaviour
 
 			// Move
 			flight.Timer += Time.deltaTime;
-			bool arrived = false;
+			bool justArrived = false;
 			if (canMove)
 			{
 				flight.Craft.transform.position += maxDeltaPos;
 				if (flight.Craft.transform.position.y <= _arrivalEndPos.y)
 				{
 					flight.Craft.transform.position = _arrivalEndPos;
-					arrived = true;
+					justArrived = true;
 				}
 			}
 			heightPrevious = flight.Craft.transform.position.y;
 
 			// Arrive
-			if (arrived)
+			if (justArrived)
 			{
+				flight.CraftMovementComplete = true;
 				flight.Craft.EnableCollider();
 				flight.Craft.enabled = true;
 				_allDrivableCraft.Add(flight.Craft);
-				_arrivals[i] = null;
 
-				// TODO add tip based on PercentageRemaining
+				flight.NPCJumping = true;
+				flight.QueueNextNPCMove = false;
+				Vector3 exitPos = flight.Craft.transform.position + Globals.Player.ExitSpacecraftHeight * Vector3.up;
+				flight.Craft.NPC.transform.position = exitPos;
+				flight.Craft.NPC.MoveArc(exitPos, _npcArrivalLand.position, _npcArrivalJumpDuration, faceRight: true,
+					onFinished: () => {
+						flight.NPCJumping = false;
+					});
 			}
 		}
 
-		// Remove flights that were completed this frame
-		for (int i = numArrivals - 1; i >= 0; --i)
+		// Complete arrival
+		if (_arrivals.Count > 0 && !_arrivals[0].NPCJumping)
 		{
-			if (_arrivals[i] == null)
+			NPC npc = _arrivals[0].Craft.NPC;
+			npc.transform.position = _npcArrivalLand.position;
+			if (_arrivals[0].QueueNextNPCMove)
 			{
-				_arrivals.RemoveAt(i);
+				npc.MoveLinear(_npcArrivalLand.position, _npcArrivalIndoors.position, _npcArrivalMoveDuration,
+					startAlpha: 1.0f, endAlpha: 0.0f, faceRight: true,
+					onFinished: () => {
+						npc.Hide();
+					});
+
+				// TODO add tip based on PercentageRemaining
+
+				_arrivals.RemoveAt(0);
 			}
 		}
 
@@ -118,6 +151,14 @@ public class Game : MonoBehaviour
 		if (_arrivals.Count < _maxQueuedArrivals)
 		{
 			SpawnSpacecraft();
+		}
+	}
+
+	private void OnStartDriving(Spacecraft craft)
+	{
+		if (_arrivals.Count > 0 && craft == _arrivals[0].Craft)
+		{
+			_arrivals[0].QueueNextNPCMove = true;
 		}
 	}
 }

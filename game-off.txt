@@ -12,15 +12,16 @@ Billionaires have colonized, commercialized and privatized the moon. Your only s
 - You need to retrieve the right vehicle and drive it back to them, if correct they will drive off
 
 === TODO
+- Pool spacecraft, including initial population
 - Spacecraft UI
 	- Timer bar ticking down (no visible seconds count)
 	- Arrival timer ticks down significantly more slowly than departure timer, so player can choose to let them wait and give themself breathing room
+	- Set background color of craft notification to blend from green to red
 - NPC arrival/departure
 	- The tip you receive is based on how much of the timer is remaining
 	- No lives, no game over, just get highest score possible in a single shift
 	- Endless mode is just no shift timer
 
-	- Arrivals queue horizontally, have collision disabled other than front one with NPC standing next to it, front one is only enterable one
 	- Upon entering NPC jumps offscreen and craft is added to list of potential departures (with minimum time before departure)
 	- Departures always leave from the same spot, further along than the arrival queue
 	- NPC stands next to spot, if correct vehicle is inside exit area, NPC jumps in, collision disabled, floats upward offscreen

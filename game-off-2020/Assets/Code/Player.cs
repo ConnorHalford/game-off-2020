@@ -4,9 +4,6 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-	[SerializeField] private SpriteRenderer _sprite = null;
-	[SerializeField] private CharacterAnimator _anim = null;
-
 	[Header("Movement")]
 	[SerializeField] private float _moveForce = 30.0f;
 	[SerializeField] private float _maxHorizontalSpeed = 10.0f;
@@ -17,11 +14,11 @@ public class Player : MonoBehaviour
 	[SerializeField] private float _enterSpacecraftDistance = 3.0f;
 
 	[Header("Anim")]
+	[SerializeField] private CharacterAnimator _anim = null;
 	[SerializeField] private float _raycastHeightOffset = 1.0f;
 	[SerializeField] private float _heightConsideredGrounded = 0.2f;
 	[SerializeField] private float _idleThreshold = 0.1f;
 	[SerializeField] private float _spriteFlipThreshold = 0.01f;
-	[SerializeField] private bool _spriteJumpsInScreenSpace = false;
 
 	private Rigidbody _rb = null;
 	private Plane _groundPlane = new Plane(Vector3.up, Vector3.zero);
@@ -32,6 +29,8 @@ public class Player : MonoBehaviour
 	private float _timeLastPressedJump = 0.0f;
 	private bool _wantEnterCraft = false;
 	private float _timeLastExitedCraft = Mathf.NegativeInfinity;
+
+	public float ExitSpacecraftHeight { get { return _exitSpacecraftHeight; } }
 
 	private void Awake()
 	{
@@ -51,7 +50,8 @@ public class Player : MonoBehaviour
 
 	private void OnEnable()
 	{
-		_sprite.flipX = false;
+		_anim.SetCharacter(CharacterAnimator.CharacterSelection.Green);
+		_anim.SetFlipX(false);
 		_anim.PlayIdle();
 		_timeLastGrounded = Time.time;
 		_timeLastJumped = 0.0f;
@@ -137,14 +137,7 @@ public class Player : MonoBehaviour
 			heightAboveGround -= _raycastHeightOffset;
 			_timeLastGrounded = Time.time;
 		}
-		if (_spriteJumpsInScreenSpace)
-		{
-			_sprite.transform.position = basePosition + heightAboveGround * _sprite.transform.up;
-		}
-		else
-		{
-			_sprite.transform.position = transform.position;
-		}
+		_anim.transform.position = transform.position;
 
 		// Prevent falling out of the world
 		if (_rb.position.y < 0.0f)
@@ -233,11 +226,11 @@ public class Player : MonoBehaviour
 		// Sprite flipping
 		if (_moveInput.x < -_spriteFlipThreshold)
 		{
-			_sprite.flipX = true;
+			_anim.SetFlipX(true);
 		}
 		else if (_moveInput.x > _spriteFlipThreshold)
 		{
-			_sprite.flipX = false;
+			_anim.SetFlipX(false);
 		}
 	}
 }

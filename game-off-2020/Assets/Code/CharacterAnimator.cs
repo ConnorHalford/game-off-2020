@@ -11,19 +11,32 @@ public class CharacterAnimator : MonoBehaviour
 		Yellow
 	}
 
-	[SerializeField] private CharacterSelection _character = CharacterSelection.Green;
+	[SerializeField] private SpriteRenderer _sprite = null;
 	[SerializeField] private Animator _animator = null;
 	[SerializeField] private RuntimeAnimatorController[] _animControllers = null;
+
+	private CharacterSelection _character = CharacterSelection.Beige;
 
 	private static readonly int ANIM_FALL = Animator.StringToHash("Fall");
 	private static readonly int ANIM_IDLE = Animator.StringToHash("Idle");
 	private static readonly int ANIM_JUMP = Animator.StringToHash("Jump");
 	private static readonly int ANIM_WALK = Animator.StringToHash("Walk");
 
-	private void Awake()
+	public void SetCharacter(CharacterSelection character)
 	{
+		_character = character;
 		_animator.runtimeAnimatorController = _animControllers[(int)_character];
 		PlayIdle();
+	}
+
+	public void SetFlipX(bool flip)
+	{
+		_sprite.flipX = flip;
+	}
+
+	public void SetAlpha(float alpha)
+	{
+		_sprite.color = new Color(_sprite.color.r, _sprite.color.g, _sprite.color.b, alpha);
 	}
 
 	public void PlayFall()
