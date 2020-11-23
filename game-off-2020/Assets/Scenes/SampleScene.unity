@@ -4370,6 +4370,36 @@ Transform:
   m_Father: {fileID: 837821232}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1463443640
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1463443641}
+  m_Layer: 8
+  m_Name: MarkerNPCDepartureIndoors
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1463443641
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463443640}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 17, y: 0, z: -4.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 837821232}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1476705790
 GameObject:
   m_ObjectHideFlags: 0
@@ -4465,6 +4495,36 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1476705790}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1493061606
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1493061607}
+  m_Layer: 8
+  m_Name: MarkerNPCDepartureJumpStartMax
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1493061607
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1493061606}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 19, y: 0, z: -3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 837821232}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1559995292
 GameObject:
   m_ObjectHideFlags: 0
@@ -4862,12 +4922,20 @@ MonoBehaviour:
   _maxArrivalTimer: 50
   _minSpacing: 8
   _maxQueuedArrivals: 5
-  _npcArrivalLand: {fileID: 2013831138}
-  _npcArrivalJumpDuration: 1
-  _npcArrivalJumpHeight: 2
-  _npcArrivalIndoors: {fileID: 1441422312}
-  _npcArrivalMoveDuration: 1
   _markerDepartures: {fileID: 1829850287}
+  _minTimeBeforeDeparture: 5
+  _maxTimeBeforeDeparture: 5
+  _departureDuration: 15
+  _minDepartureTimer: 30
+  _maxDepartureTimer: 50
+  _maxQueuedDepartures: 5
+  _npcJumpDuration: 1
+  _npcMoveDuration: 1
+  _npcArrivalJumpEnd: {fileID: 2013831138}
+  _npcArrivalIndoors: {fileID: 1441422312}
+  _npcDepartureIndoors: {fileID: 1463443641}
+  _npcDepartureJumpStartMin: {fileID: 2013016887}
+  _npcDepartureJumpStartMax: {fileID: 1493061607}
 --- !u!4 &1689597566
 Transform:
   m_ObjectHideFlags: 0
@@ -5666,6 +5734,36 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2010360173}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2013016886
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2013016887}
+  m_Layer: 8
+  m_Name: MarkerNPCDepartureJumpStartMin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2013016887
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2013016886}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 15, y: 0, z: -3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 837821232}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2013779015
 GameObject:
   m_ObjectHideFlags: 0
@@ -5771,7 +5869,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2013831138}
   m_Layer: 8
-  m_Name: MarkerNPCArrivalLand
+  m_Name: MarkerNPCArrivalJumpEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

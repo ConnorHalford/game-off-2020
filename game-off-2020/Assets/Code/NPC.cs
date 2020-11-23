@@ -62,6 +62,14 @@ public class NPC : MonoBehaviour
 		_linear = true;
 	}
 
+	private void LateUpdate()
+	{
+		if (_linear && _moveTimer < 0.0f)
+		{
+			transform.position = _moveTo;
+		}
+	}
+
 	private void Update()
 	{
 		if (_moveTimer < 0.0f)
@@ -84,6 +92,7 @@ public class NPC : MonoBehaviour
 		if (_moveTimer >= _moveDuration)
 		{
 			_moveTimer = -1.0f;
+			_anim.PlayIdle();
 			if (_onMovementFinished != null)
 			{
 				_onMovementFinished();

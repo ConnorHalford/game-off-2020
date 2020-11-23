@@ -101,6 +101,12 @@ public class Spacecraft : MonoBehaviour
 		_npc.Hide();
 	}
 
+	public void ResetModelRoll()
+	{
+		_rb.angularVelocity = Vector3.zero;
+		_modelRoot.rotation = Quaternion.LookRotation(_modelRoot.forward, Vector3.up);
+	}
+
 	private void OnDestroy()
 	{
 		Destroy(_outlineMesh);
