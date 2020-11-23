@@ -13,10 +13,9 @@ Billionaires have colonized, commercialized and privatized the moon. Your only s
 
 === TODO
 - Pool spacecraft, including initial population
+- Pool UI
 - Spacecraft UI
-	- Timer bar ticking down (no visible seconds count)
 	- Arrival timer ticks down significantly more slowly than departure timer, so player can choose to let them wait and give themself breathing room
-	- Set background color of craft notification to blend from green to red
 - Gameplay loop
 	- Upon entering an arriving or exiting a departing craft you get a tip based on how much of the timer was left
 	- Central HUD shows shift timer and tips earned
@@ -26,17 +25,19 @@ Billionaires have colonized, commercialized and privatized the moon. Your only s
 	- No lives, no game over, just get highest score possible in a single shift
 	- Endless mode is just no shift timer
 
-	- Upon entering NPC jumps offscreen and craft is added to list of potential departures (with minimum time before departure)
-	- NPC stands next to spot, if correct vehicle is inside exit area, NPC jumps in, collision disabled, floats upward offscreen
-		- Only one NPC is visible at front of arrival queue, but can have multiple NPCs waiting at departures so player can choose which order to serve them
-	- Global timer represents your shift, goal is to valet as many craft as possible, so you control your own difficulty through the rate at which you accept arrivals
-
+- Game balance
+- Increase difficulty over time
+- Spacecraft UI slide/fade in/out animations
 - Main menu
 - Particle effects
 - Sound effects
 - Music
 
 === BUGS
+- Don't seem to be able to give equivalent craft for departures, has to be original instance
+- Brief shadow flicker when new craft spawned, possibly to do with NPC character shadow projector?
+- Departures fly off at an angle if the craft still has roll
+- NPCs jump to where the craft was when they took it, not where it is (particularly noticeable if you dropoff at speed)
 - Large invisible corners on environment collision
 - Holding a move input in mid-air towards a wall pins the player to that wall
 - Fix spacecraft bobbing while player is standing on it

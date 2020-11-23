@@ -84,6 +84,7 @@ public class Spacecraft : MonoBehaviour
 	private Model _modelPrevFrame = Model.CargoA;
 	private CharacterAnimator.CharacterSelection _owner = CharacterAnimator.CharacterSelection.Beige;
 	private Mesh _outlineMesh = null;
+	private int _colorIndex = -1;
 
 	public bool IsDriving { get { return _timeStartedDriving >= 0.0f; } }
 	public CharacterAnimator.CharacterSelection Owner { get { return _owner; } }
@@ -103,8 +104,17 @@ public class Spacecraft : MonoBehaviour
 
 	public void ResetModelRoll()
 	{
+		Quaternion rot = Quaternion.LookRotation(_modelRoot.forward, Vector3.up);
+		_rb.rotation = rot;
 		_rb.angularVelocity = Vector3.zero;
-		_modelRoot.rotation = Quaternion.LookRotation(_modelRoot.forward, Vector3.up);
+		_modelRoot.rotation = rot;
+	}
+
+	public bool IsEquivalent(Spacecraft other)
+	{
+		return this._model == other._model
+			&& this._owner == other._owner
+			&& this._colorIndex == other._colorIndex;
 	}
 
 	private void OnDestroy()
@@ -288,15 +298,14 @@ public class Spacecraft : MonoBehaviour
 				break;
 			}
 		}
-		if (tintMaterialIndex >= 0)
-		{
-			Color tint = _colors[Random.Range(0, _colors.Length)];
-			tint = new Color(tint.r, tint.g, tint.b, 1.0f);
-			MaterialPropertyBlock block = new MaterialPropertyBlock();
-			renderer.GetPropertyBlock(block, tintMaterialIndex);
-			block.SetColor("_Color", tint);
-			renderer.SetPropertyBlock(block, tintMaterialIndex);
-		}
+		Debug.Assert(tintMaterialIndex >= 0);
+		_colorIndex = Random.Range(0, _colors.Length);
+		Color tint = _colors[_colorIndex];
+		tint = new Color(tint.r, tint.g, tint.b, 1.0f);
+		MaterialPropertyBlock block = new MaterialPropertyBlock();
+		renderer.GetPropertyBlock(block, tintMaterialIndex);
+		block.SetColor("_Color", tint);
+		renderer.SetPropertyBlock(block, tintMaterialIndex);
 
 		// Generate inverted hull outline mesh
 		if (_outlineMesh != null)

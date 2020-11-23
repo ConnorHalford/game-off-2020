@@ -51,9 +51,11 @@ public class Game : MonoBehaviour
 
 	private List<Flight> _departures = new List<Flight>();
 	private float _departureEndHeight = 0.0f;
-	private Collider[] _colliderInDepartArea = new Collider[10];
+	private Collider[] _collidersInDepartArea = new Collider[10];
 
 	public List<Spacecraft> AllDrivableCraft { get { return _allDrivableCraft; } }
+	public int MaxQueuedArrivals { get { return _maxQueuedArrivals; } }
+	public int MaxQueuedDepartures { get { return _maxQueuedDepartures; } }
 
 	private const float TIMER_LOCKED = 1000.0f;
 
@@ -73,7 +75,6 @@ public class Game : MonoBehaviour
 	{
 		_arrivalStartPos = _markerArrivals.transform.position + 0.5f * _markerArrivals.size.y * Vector3.up;
 		_departureEndHeight = _markerDepartures.transform.position.y + 0.5f * _markerArrivals.size.y;
-		SpawnSpacecraft();
 	}
 
 	private void SpawnSpacecraft()
@@ -86,11 +87,12 @@ public class Game : MonoBehaviour
 		craft.enabled = false;
 		Flight flight = new Flight() { Craft = craft, Timer = 0.0f, MaxTimer = Random.Range(_minArrivalTimer, _maxArrivalTimer) };
 		_arrivals.Add(flight);
+		Globals.UIManager.AddSpacecraft(craft, arrival: true);
 	}
 
 	private void Update()
 	{
-		// DEPARTURES
+		// PROGRESS DEPARTING CRAFT
 		Vector3 maxDeltaPos = Vector3.up * Time.deltaTime * _departureEndHeight / _departureDuration;
 		int numDepartures = _departures.Count;
 		for (int i = numDepartures - 1; i >= 0; --i)
@@ -98,20 +100,22 @@ public class Game : MonoBehaviour
 			Flight flight = _departures[i];
 			if (!flight.Craft.enabled && flight.NPCJumping && flight.QueueNextNPCMove)
 			{
-				// Move
+				// Progress
 				flight.Timer += Time.deltaTime;
 				flight.Craft.transform.position += maxDeltaPos;
+
+				// FINISH CRAFT DEPARTURE
 				if (flight.Craft.transform.position.y >= _departureEndHeight)
 				{
 					flight.CraftMovementComplete = true;
-					Destroy(flight.Craft.gameObject);
+					Destroy(flight.Craft.gameObject);	// TODO pooling
 					_departures.RemoveAt(i);
 				}
 			}
 		}
 
 
-		// WANTING TO DEPART
+		// CONVERT DRIVABLES INTO DEPARTURES
 		if (_departures.Count < _maxQueuedDepartures)
 		{
 			int numDrivable = _allDrivableCraft.Count;
@@ -120,7 +124,10 @@ public class Game : MonoBehaviour
 				bool timedOut = _drivableTimers[i] <= 0.0f;
 				if (!timedOut && _drivableTimers[i] < TIMER_LOCKED)
 				{
+					// Progress
 					_drivableTimers[i] -= Time.deltaTime;
+
+					// START NPC DEPARTURE
 					if (_drivableTimers[i] <= 0.0f)
 					{
 						Flight depart = new Flight();
@@ -130,11 +137,13 @@ public class Game : MonoBehaviour
 						depart.MaxTimer = Random.Range(_minDepartureTimer, _maxDepartureTimer);
 						_departures.Add(depart);
 
-						Vector3 jumpStartPos = Vector3.Lerp(_npcDepartureJumpStartMin.position, _npcDepartureJumpStartMax.position, Random.value);
+						Vector3 jumpStartPos = Vector3.Lerp(_npcDepartureJumpStartMin.position,
+							_npcDepartureJumpStartMax.position, Random.value);
 						craft.NPC.MoveLinear(_npcDepartureIndoors.position, jumpStartPos, _npcMoveDuration,
 							startAlpha: 0.0f, endAlpha: 1.0f, faceRight: false,
 							onFinished: () => {
 								depart.QueueNextNPCMove = true;
+								Globals.UIManager.AddSpacecraft(craft, arrival: false);
 							});
 
 						if (_departures.Count >= _maxQueuedDepartures)
@@ -147,51 +156,64 @@ public class Game : MonoBehaviour
 		}
 
 
-		// BEGINNING DEPARTURE
-		int numCraftInDepartArea = Physics.OverlapBoxNonAlloc(_markerDepartures.transform.position, 0.5f * _markerDepartures.size,
-			_colliderInDepartArea, Quaternion.identity, Globals.MaskSpacecraft, QueryTriggerInteraction.Ignore);
+		// PROGRESS DEPARTURE TIMERS
 		numDepartures = _departures.Count;
+		for (int departIndex = 0; departIndex < numDepartures; ++departIndex)
+		{
+			Flight flight = _departures[departIndex];
+			if (flight.QueueNextNPCMove && !flight.NPCJumping && flight.Craft.enabled)
+			{
+				flight.Timer += Time.deltaTime;
+				Globals.UIManager.UpdateSpacecraft(flight.Craft, flight.PercentRemaining, arrival: false);
+			}
+		}
+
+
+		// MATCH NPCS TO CRAFT IN DEPARTURE AREA
+		int numCraftInDepartArea = Physics.OverlapBoxNonAlloc(_markerDepartures.transform.position, 0.5f * _markerDepartures.size,
+			_collidersInDepartArea, Quaternion.identity, Globals.MaskSpacecraft, QueryTriggerInteraction.Ignore);
 		if (numCraftInDepartArea > 0 && numDepartures > 0)
 		{
 			for (int craftIndex = 0; craftIndex < numCraftInDepartArea; ++craftIndex)
 			{
-				Spacecraft craft = _colliderInDepartArea[craftIndex].GetComponentInParent<Spacecraft>();
+				Spacecraft craft = _collidersInDepartArea[craftIndex].GetComponentInParent<Spacecraft>();
 				if (craft.IsDriving || !craft.enabled)
 				{
 					continue;
 				}
-				for (int depIndex = 0; depIndex < numDepartures; ++depIndex)
+				for (int departIndex = 0; departIndex < numDepartures; ++departIndex)
 				{
-					// TODO change this to match model, color and owner sprite, not specific instance
-					Flight flight = _departures[depIndex];
-					if (flight.Craft == craft)
+					// START CRAFT DEPARTURE
+					Flight flight = _departures[departIndex];
+					if (flight.QueueNextNPCMove && !flight.NPCJumping && craft.IsEquivalent(flight.Craft))
 					{
-						if (flight.QueueNextNPCMove && !flight.NPCJumping)
+						// Make craft no longer drivable
+						craft.DisableCollider();
+						craft.SetOutlineVisible(false);
+						craft.ResetModelRoll();
+						craft.enabled = false;
+						int numDrivable = _allDrivableCraft.Count;
+						for (int driveIndex = 0; driveIndex < numDrivable; ++driveIndex)
 						{
-							craft.DisableCollider();
-							craft.SetOutlineVisible(false);
-							craft.ResetModelRoll();
-							craft.enabled = false;
-							int numDrivable = _allDrivableCraft.Count;
-							for (int driveIndex = 0; driveIndex < numDrivable; ++driveIndex)
+							if (_allDrivableCraft[driveIndex] == craft)
 							{
-								if (_allDrivableCraft[driveIndex] == craft)
-								{
-									_allDrivableCraft.RemoveAt(driveIndex);
-									_drivableTimers.RemoveAt(driveIndex);
-									break;
-								}
+								_allDrivableCraft.RemoveAt(driveIndex);
+								_drivableTimers.RemoveAt(driveIndex);
+								break;
 							}
-
-							flight.NPCJumping = true;
-							flight.QueueNextNPCMove = false;
-							Vector3 jumpEndPos = flight.Craft.transform.position + Globals.Player.ExitSpacecraftHeight * Vector3.up;
-							flight.Craft.NPC.MoveArc(flight.Craft.NPC.transform.position, jumpEndPos, _npcJumpDuration, faceRight: false,
-								onFinished: () => {
-									flight.QueueNextNPCMove = true;
-									flight.Craft.NPC.Hide();
-								});
 						}
+
+						// Make NPC jump into craft
+						Globals.UIManager.RemoveSpacecraft(flight.Craft, arrival: false);
+						flight.NPCJumping = true;
+						flight.QueueNextNPCMove = false;
+						Vector3 jumpEndPos = flight.Craft.transform.position + Globals.Player.ExitSpacecraftHeight * Vector3.up;
+						flight.Craft.NPC.MoveArc(flight.Craft.NPC.transform.position, jumpEndPos, _npcJumpDuration, faceRight: false,
+							onFinished: () => {
+								flight.QueueNextNPCMove = true;
+								flight.Craft.NPC.Hide();
+							});
+
 						break;
 					}
 				}
@@ -199,12 +221,12 @@ public class Game : MonoBehaviour
 		}
 
 
-		// ARRIVALS
+		// PROGRESS ARRIVING CRAFT
 		bool movementBlocked = Physics.CheckBox(_markerArrivals.transform.position, 0.5f * _markerArrivals.size,
 			Quaternion.identity, Globals.MaskSpacecraft, QueryTriggerInteraction.Ignore);
 		int numArrivals = _arrivals.Count;
 		maxDeltaPos = Vector3.down * Time.deltaTime * (_arrivalStartPos.y - _arrivalEndPos.y) / _arrivalDuration;
-		float heightPrevious = -_minSpacing;
+		float heightPrevious = 0.0f;
 		for (int i = 0; i < numArrivals; ++i)
 		{
 			// Work out whether the craft can move.
@@ -212,38 +234,42 @@ public class Game : MonoBehaviour
 			// Other arrivals can only move if they wouldn't end up too close to the arrival below them.
 			Flight flight = _arrivals[i];
 			bool canMove = (i > 0 || !movementBlocked) && !flight.CraftMovementComplete;
-			if (canMove)
+			if (canMove && i > 0)
 			{
 				float spacing = flight.Craft.transform.position.y - heightPrevious;
-				if (spacing < _minSpacing)
-				{
-					canMove = false;
-				}
+				canMove = spacing > _minSpacing;
 			}
 
-			// Move
+			// Progress
 			flight.Timer += Time.deltaTime;
+			Globals.UIManager.UpdateSpacecraft(flight.Craft, flight.PercentRemaining, arrival: true);
 			bool justArrived = false;
 			if (canMove)
 			{
-				flight.Craft.transform.position += maxDeltaPos;
-				if (flight.Craft.transform.position.y <= _arrivalEndPos.y)
+				Vector3 pos = flight.Craft.transform.position;
+				pos += maxDeltaPos;
+				float minY = heightPrevious + _minSpacing;
+				if (i == 0)
 				{
-					flight.Craft.transform.position = _arrivalEndPos;
-					justArrived = true;
+					minY = _arrivalEndPos.y;
+					justArrived = pos.y <= minY;
 				}
+				pos.y = Mathf.Max(pos.y, minY);
+				flight.Craft.transform.position = pos;
 			}
 			heightPrevious = flight.Craft.transform.position.y;
 
-			// Arrive
+			// FINISH CRAFT ARRIVAL + START NPC ARRIVAL
 			if (justArrived)
 			{
+				// Make craft drivable
 				flight.CraftMovementComplete = true;
 				flight.Craft.EnableCollider();
 				flight.Craft.enabled = true;
 				_allDrivableCraft.Add(flight.Craft);
 				_drivableTimers.Add(TIMER_LOCKED + Random.Range(_minTimeBeforeDeparture, _maxTimeBeforeDeparture));
 
+				// Make NPC jump out of craft
 				flight.NPCJumping = true;
 				flight.QueueNextNPCMove = false;
 				Vector3 jumpStartPos = flight.Craft.transform.position + Globals.Player.ExitSpacecraftHeight * Vector3.up;
@@ -255,13 +281,15 @@ public class Game : MonoBehaviour
 			}
 		}
 
-		// Complete arrival
+
+		// FINISH NPC ARRIVAL
 		if (_arrivals.Count > 0 && !_arrivals[0].NPCJumping)
 		{
-			NPC npc = _arrivals[0].Craft.NPC;
-			npc.transform.position = _npcArrivalJumpEnd.position;
-			if (_arrivals[0].QueueNextNPCMove)
+			Flight flight = _arrivals[0];
+			flight.Craft.NPC.transform.position = _npcArrivalJumpEnd.position;
+			if (flight.QueueNextNPCMove)
 			{
+				// Unlock timer so craft's NPC can choose to depart
 				int numDrivable = _allDrivableCraft.Count;
 				for (int drive = 0; drive < numDrivable; ++drive)
 				{
@@ -272,19 +300,20 @@ public class Game : MonoBehaviour
 					}
 				}
 
-				npc.MoveLinear(_npcArrivalJumpEnd.position, _npcArrivalIndoors.position, _npcMoveDuration,
+				// Make NPC leave arrival area
+				flight.Craft.NPC.MoveLinear(_npcArrivalJumpEnd.position, _npcArrivalIndoors.position, _npcMoveDuration,
 					startAlpha: 1.0f, endAlpha: 0.0f, faceRight: true,
 					onFinished: () => {
-						npc.Hide();
+						flight.Craft.NPC.Hide();
 					});
 
-				// TODO add tip based on PercentageRemaining
-
+				Globals.UIManager.RemoveSpacecraft(flight.Craft, arrival: true);
 				_arrivals.RemoveAt(0);
 			}
 		}
 
-		// Constantly spawn if possible
+
+		// START NEW ARRIVALS
 		if (_arrivals.Count < _maxQueuedArrivals)
 		{
 			SpawnSpacecraft();

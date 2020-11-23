@@ -10,31 +10,96 @@ public class UIManager : MonoBehaviour
 	[SerializeField] private UISpacecraft PrefabUISpacecraft = null;
 	[SerializeField] private float _spacing = 10.0f;
 
-	private List<UISpacecraft> _arrivals = new List<UISpacecraft>();
-	private List<UISpacecraft> _departures = new List<UISpacecraft>();
+	private UISpacecraft[] _arrivals = null;
+	private UISpacecraft[] _departures = null;
 
 	private void Awake()
 	{
 		Globals.RegisterUIManager(this);
 	}
 
-	public void OnRegisterSpacecraft(Spacecraft craft)
+	private void Start()
 	{
-		UISpacecraft ui = Instantiate(PrefabUISpacecraft, transform);
-		ui.Populate(craft);
+		CreatePool(ref _arrivals, Globals.Game.MaxQueuedArrivals, "Arrivals");
+		CreatePool(ref _departures, Globals.Game.MaxQueuedDepartures, "Departures");
+	}
 
-		Vector3 position = Vector3.zero;
-		if (_arrivals.Count == 0)
+	private void CreatePool(ref UISpacecraft[] array, int count, string parentName)
+	{
+		GameObject parent = new GameObject(parentName);
+		parent.transform.SetParent(transform);
+		array = new UISpacecraft[count];
+		for (int i = 0; i < count; ++i)
 		{
-			position.y = BottomY(_textArrivals.rectTransform) - 0.5f * _spacing;
+			array[i] = Instantiate(PrefabUISpacecraft, parent.transform);
+			array[i].gameObject.SetActive(false);
+		}
+	}
+
+	public void AddSpacecraft(Spacecraft craft, bool arrival)
+	{
+		// Grab from pool
+		UISpacecraft[] array = arrival ? _arrivals : _departures;
+		int count = array.Length;
+		int index = -1;
+		for (int i = 0; i < count; ++i)
+		{
+			if (!array[i].gameObject.activeInHierarchy)
+			{
+				index = i;
+				break;
+			}
+		}
+		Debug.Assert(index >= 0);
+
+		// Setup
+		array[index].gameObject.SetActive(true);
+		array[index].Populate(craft);
+
+		// Position
+		RectTransform root = arrival ? _textArrivals.rectTransform : _textDepartures.rectTransform;
+		Vector3 position = Vector3.zero;
+		if (!arrival)
+		{
+			position.x = Screen.width - array[index].RectTransform.sizeDelta.x;
+		}
+		if (index == 0)
+		{
+			position.y = BottomY(root) - _spacing;
 		}
 		else
 		{
-			position.y = BottomY(_arrivals[_arrivals.Count - 1].RectTransform) - _spacing;
+			position.y = BottomY(array[index - 1].RectTransform) - _spacing;
 		}
-		ui.RectTransform.position = position;
+		array[index].RectTransform.position = position;
+	}
 
-		_arrivals.Add(ui);
+	public void RemoveSpacecraft(Spacecraft craft, bool arrival)
+	{
+		UISpacecraft[] array = arrival ? _arrivals : _departures;
+		int count = array.Length;
+		for (int i = 0; i < count; ++i)
+		{
+			if (array[i].Craft == craft)
+			{
+				array[i].gameObject.SetActive(false);
+				break;
+			}
+		}
+	}
+
+	public void UpdateSpacecraft(Spacecraft craft, float timerPercentage, bool arrival)
+	{
+		UISpacecraft[] array = arrival ? _arrivals : _departures;
+		int count = array.Length;
+		for (int i = 0; i < count; ++i)
+		{
+			if (array[i].Craft == craft)
+			{
+				array[i].SetTimerPercentage(timerPercentage);
+				break;
+			}
+		}
 	}
 
 	private static float BottomY(RectTransform rt)
