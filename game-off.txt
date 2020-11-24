@@ -13,21 +13,23 @@ Billionaires have colonized, commercialized and privatized the moon. Your only s
 
 === TODO
 - Pool spacecraft, including initial population
-- Pool UI
-- Spacecraft UI
-	- Arrival timer ticks down significantly more slowly than departure timer, so player can choose to let them wait and give themself breathing room
 - Gameplay loop
 	- Upon entering an arriving or exiting a departing craft you get a tip based on how much of the timer was left
+		- Spawn tip number that moves upwards and fades, place above spacecraft so you know which one gives what money
 	- Central HUD shows shift timer and tips earned
 	- Game ends when shift ends, tips earned is score, be nice to also show how many craft were valeted
 - NPC arrival/departure
 	- The tip you receive is based on how much of the timer is remaining
 	- No lives, no game over, just get highest score possible in a single shift
 	- Endless mode is just no shift timer
-
 - Game balance
-- Increase difficulty over time
-- Spacecraft UI slide/fade in/out animations
+	- Time between new spawns
+	- Time between arrival and departure
+	- Duration of NPC arrival timer
+	- Duration of NPC departure timer
+	- To increase difficulty over time, reduce all of the above (global multiplier?)
+	- Probably want NPC arrival duration much longer than NPC departure timer, so player can choose to let them wait and give themself breathing room to clear departures
+
 - Main menu
 - Particle effects
 - Sound effects

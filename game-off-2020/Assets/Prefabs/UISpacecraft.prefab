@@ -234,6 +234,7 @@ GameObject:
   - component: {fileID: 4730247707445931570}
   - component: {fileID: 4730247707445931569}
   - component: {fileID: 4730247707445931568}
+  - component: {fileID: 7351648975742830698}
   m_Layer: 5
   m_Name: UISpacecraft
   m_TagString: Untagged
@@ -276,6 +277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43c88628ee5e91a4da2fe8660a9f7675, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _group: {fileID: 7351648975742830698}
   _imageCraft: {fileID: 4730247706820579742}
   _imageOwner: {fileID: 4730247707460609929}
   _imageTimerFront: {fileID: 4730247707005290889}
@@ -285,6 +287,35 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6bf82ba54608cdc4db286c0f4dd5c873, type: 3}
   - {fileID: 21300000, guid: 19474630ae6339f48a622a1950948083, type: 3}
   - {fileID: 21300000, guid: f39d9df59f5e04940a707efc41da84e2, type: 3}
+  _timerGradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 0, b: 0, a: 1}
+    key1: {r: 1, g: 0.14117648, b: 0, a: 1}
+    key2: {r: 1, g: 0.5232082, b: 0, a: 0}
+    key3: {r: 1, g: 0.83137256, b: 0, a: 0}
+    key4: {r: 1, g: 0.83137256, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 11951
+    ctime2: 29684
+    ctime3: 47802
+    ctime4: 65535
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 5
+    m_NumAlphaKeys: 2
 --- !u!222 &4730247707445931569
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -323,6 +354,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &7351648975742830698
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4730247707445931574}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &4730247707460609935
 GameObject:
   m_ObjectHideFlags: 0
