@@ -91,9 +91,22 @@ public class Spacecraft : MonoBehaviour
 	public float HeightWhenDriving { get { return _heightWhenDriving; } }
 	public NPC NPC { get { return _npc; } }
 
+	private void Start()
+	{
+		Globals.Game.OnGameStateChanged += OnGameStateChanged;
+	}
+
+	private void OnGameStateChanged(GameState state)
+	{
+		_rb.velocity = Vector3.zero;
+		_rb.angularVelocity = Vector3.zero;
+	}
+
 	public void Spawn()
 	{
 		_rb = GetComponent<Rigidbody>();
+		_rb.velocity = Vector3.zero;
+		_rb.angularVelocity = Vector3.zero;
 		_model = (Model)Random.Range(0, System.Enum.GetValues(typeof(Model)).Length);
 		ChangeModel(_model);
 		SetOutlineVisible(false);
@@ -124,6 +137,11 @@ public class Spacecraft : MonoBehaviour
 
 	private void Update()
 	{
+		if (Globals.Game.State != GameState.Game)
+		{
+			return;
+		}
+
 		// Change model
 		if (_model != _modelPrevFrame)
 		{
@@ -149,6 +167,10 @@ public class Spacecraft : MonoBehaviour
 
 	private void LateUpdate()
 	{
+		if (Globals.Game.State != GameState.Game)
+		{
+			return;
+		}
 		ResetUnwantedRotations();
 	}
 
@@ -172,6 +194,11 @@ public class Spacecraft : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+		if (Globals.Game.State != GameState.Game)
+		{
+			return;
+		}
+
 		// Levitate
 		Vector3 frontAnchor = 0.5f * (_frontLeftAnchor.position + _frontRightAnchor.position);
 		Vector3 rearAnchor = 0.5f * (_rearLeftAnchor.position + _rearRightAnchor.position);

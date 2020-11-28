@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
 		public Spacecraft Craft = null;
 		public float CraftTimerPercentage = 1.0f;
 	}
+
 	private class UIAnim
 	{
 		public UISpacecraft UI = null;
@@ -19,11 +20,21 @@ public class UIManager : MonoBehaviour
 		public bool Appearing = true;
 	}
 
+	[Header("Game")]
+	[SerializeField] private GameObject _rootGame = null;
 	[SerializeField] private TextMeshProUGUI _textArrivals = null;
 	[SerializeField] private TextMeshProUGUI _textDepartures = null;
+	[SerializeField] private TextMeshProUGUI _textHUD = null;
 	[SerializeField] private UISpacecraft PrefabUISpacecraft = null;
 	[SerializeField] private float _spacing = 10.0f;
 	[SerializeField] private float _animDuration = 0.3f;
+
+	[Header("Menu")]
+	[SerializeField] private GameObject _rootMenu = null;
+
+	[Header("End")]
+	[SerializeField] private GameObject _rootEnd = null;
+	[SerializeField] private TextMeshProUGUI _textEnd = null;
 
 	private UISpacecraft[] _arrivals = null;
 	private UISpacecraft[] _departures = null;
@@ -49,6 +60,51 @@ public class UIManager : MonoBehaviour
 		_queuedDepartures = new List<QueuedUI>(maxDepartures);
 
 		_anims = new List<UIAnim>(maxArrivals + maxDepartures);
+
+		Globals.Game.OnGameStateChanged += OnGameStateChanged;
+		OnGameStateChanged(Globals.Game.State);
+	}
+
+	private void OnGameStateChanged(GameState state)
+	{
+		_rootMenu.SetActive(state == GameState.Menu);
+		_rootGame.SetActive(state == GameState.Game);
+		_rootEnd.SetActive(state == GameState.End);
+
+		// Clear game UI
+		_anims.Clear();
+		_queuedArrivals.Clear();
+		_queuedDepartures.Clear();
+		_numVisibleArrivals = 0;
+		_numVisibleDepartures = 0;
+		int count = _arrivals.Length;
+		for (int i = 0; i < count; ++i)
+		{
+			_arrivals[i].gameObject.SetActive(false);
+		}
+		count = _departures.Length;
+		for (int i = 0; i < count; ++i)
+		{
+			_departures[i].gameObject.SetActive(false);
+		}
+
+		if (state == GameState.End)
+		{
+			int numParked = Globals.Game.NumCraftParked;
+			int numReturned = Globals.Game.NumCraftReturned;
+			ulong credits = Globals.Game.Credits;
+			_textEnd.text =
+				"Your shift is finally over!"
+				+ "\n"
+				+ "\nYou parked " + numParked.ToString() + " spacecraft"
+				+ "\nYou returned " + numReturned.ToString() + " spacecraft"
+				+ "\nYou earned Ͼ" + credits.ToString("N0") + " space credits"
+				+ "\n"
+				+ "\nTime to go home, rest up, and do it all again tomorrow."
+				+ "\nHooray for space capitalism!"
+				+ "\n"
+				+ "\n<align=center><b>Press the jump button to reflect on life as a...</b></align>";
+		}
 	}
 
 	private void CreatePool(ref UISpacecraft[] array, int count, string parentName)
@@ -65,6 +121,11 @@ public class UIManager : MonoBehaviour
 
 	private void LateUpdate()
 	{
+		if (Globals.Game.State != GameState.Game)
+		{
+			return;
+		}
+
 		// Update anims
 		int count = _anims == null ? 0 : _anims.Count;
 		float deltaAnim = Time.deltaTime / _animDuration;
@@ -97,14 +158,22 @@ public class UIManager : MonoBehaviour
 		{
 			QueuedUI queued = _queuedArrivals[0];
 			_queuedArrivals.RemoveAt(0);
-			AddSpacecraft(queued.Craft, arrival: true, queued.CraftTimerPercentage);
+			StartFlight(queued.Craft, arrival: true, queued.CraftTimerPercentage);
 		}
 		while (_numVisibleDepartures < _departures.Length && _queuedDepartures.Count > 0)
 		{
 			QueuedUI queued = _queuedDepartures[0];
 			_queuedDepartures.RemoveAt(0);
-			AddSpacecraft(queued.Craft, arrival: false, queued.CraftTimerPercentage);
+			StartFlight(queued.Craft, arrival: false, queued.CraftTimerPercentage);
 		}
+
+		// HUD
+		ulong credits = Globals.Game.Credits;
+		float secondsRemaining = Globals.Game.SecondsRemaining;
+		int minutes = Mathf.FloorToInt(secondsRemaining / 60.0f);
+		int seconds = Mathf.FloorToInt(secondsRemaining % 60);
+		_textHUD.text = "Credits: Ͼ" + credits.ToString("N0")
+			+ "\nShift remaining: " + minutes.ToString("D2") + ":" + seconds.ToString("D2");
 	}
 
 	private void ApplyAnim(UIAnim anim)
@@ -130,7 +199,7 @@ public class UIManager : MonoBehaviour
 		anim.UI.SetAlphaMultiplier(alpha);
 	}
 
-	public void AddSpacecraft(Spacecraft craft, bool arrival, float timerPercentage = 1.0f)
+	public void StartFlight(Spacecraft craft, bool arrival, float timerPercentage = 1.0f)
 	{
 		// Grab from pool
 		int index = -1;

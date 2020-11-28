@@ -1,27 +1,9 @@
 
-=== SPACE VALET
-Billionaires have colonized, commercialized and privatized the moon. Your only shot at getting to go up there is to work your same crappy job as a valet, but _in space_, which is much cooler. It'll be worth it. Definitely.
-
-=== GAMEPLAY
-- You are a character running around on the moon
-- You can enter and exit spacecraft and fly them around in 2D above the ground (can't go upwards), they are basically 'space cars'
-- Spacecraft have a health meter which goes down if you crash them into the environment or other vehicles
-- NPCs arrive in a spacecraft and wait for you to come and take the keys, then go into a building
-- You need to find a place to park the spacecraft without damaging it, so that more guests can arrive
-- Guests also start exiting the building after a while, and will request their vehicle back
-- You need to retrieve the right vehicle and drive it back to them, if correct they will drive off
-
 === TODO
-- Pool spacecraft, including initial population
+- Finish environment
 - Gameplay loop
 	- Upon entering an arriving or exiting a departing craft you get a tip based on how much of the timer was left
 		- Spawn tip number that moves upwards and fades, place above spacecraft so you know which one gives what money
-	- Central HUD shows shift timer and tips earned
-	- Game ends when shift ends, tips earned is score, be nice to also show how many craft were valeted
-- NPC arrival/departure
-	- The tip you receive is based on how much of the timer is remaining
-	- No lives, no game over, just get highest score possible in a single shift
-	- Endless mode is just no shift timer
 - Game balance
 	- Time between new spawns
 	- Time between arrival and departure
@@ -30,10 +12,15 @@ Billionaires have colonized, commercialized and privatized the moon. Your only s
 	- To increase difficulty over time, reduce all of the above (global multiplier?)
 	- Probably want NPC arrival duration much longer than NPC departure timer, so player can choose to let them wait and give themself breathing room to clear departures
 
-- Main menu
-- Particle effects
 - Sound effects
 - Music
+
+=== RELEASE
+- itch page
+- Try web build
+- Standalone build(s?)
+- Make repo public
+- Tweet
 
 === BUGS
 - Don't seem to be able to give equivalent craft for departures, has to be original instance

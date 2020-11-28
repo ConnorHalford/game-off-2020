@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
 	private float _timeLastJumped = 0.0f;
 	private float _timeLastPressedJump = 0.0f;
 	private bool _wantEnterCraft = false;
-	private float _timeLastExitedCraft = Mathf.NegativeInfinity;
+	private float _timeLastExitedCraft = 0.0f;
 
 	public float ExitSpacecraftHeight { get { return _exitSpacecraftHeight; } }
 
@@ -36,20 +36,20 @@ public class Player : MonoBehaviour
 	{
 		_rb = GetComponent<Rigidbody>();
 		Globals.RegisterPlayer(this);
-		Globals.OnStartDriving -= OnStartDriving;
-		Globals.OnStartDriving += OnStartDriving;
-		Globals.OnStopDriving -= OnStopDriving;
-		Globals.OnStopDriving += OnStopDriving;
 	}
 
-	private void OnDestroy()
+	private void Start()
 	{
-		Globals.OnStartDriving -= OnStartDriving;
-		Globals.OnStopDriving -= OnStopDriving;
+		Globals.OnStartDriving += OnStartDriving;
+		Globals.OnStopDriving += OnStopDriving;
+		Globals.Game.OnGameStateChanged += OnGameStateChanged;
+		OnGameStateChanged(Globals.Game.State);
 	}
 
 	private void OnEnable()
 	{
+		_rb.velocity = Vector3.zero;
+		_rb.angularVelocity = Vector3.zero;
 		_anim.SetCharacter(CharacterAnimator.CharacterSelection.Green);
 		_anim.SetFlipX(false);
 		_anim.PlayIdle();
@@ -67,12 +67,29 @@ public class Player : MonoBehaviour
 	{
 		transform.position = craft.transform.position + _exitSpacecraftHeight * Vector3.up;
 		_rb.velocity = Vector3.zero;
+		_rb.angularVelocity = Vector3.zero;
 		gameObject.SetActive(true);
 		_timeLastExitedCraft = Time.time;
 	}
 
+	private void OnGameStateChanged(GameState state)
+	{
+		_moveInput = Vector2.zero;
+		_timeLastGrounded = -999.0f;
+		_timeLastJumped = -999.0f;
+		_timeLastPressedJump = -999.0f;
+		_wantEnterCraft = false;
+		_timeLastExitedCraft = -999;
+		gameObject.SetActive(state == GameState.Game);
+	}
+
 	private void Update()
 	{
+		if (Globals.Game.State != GameState.Game)
+		{
+			return;
+		}
+
 		_moveInput = Globals.Controls.Character.Movement.ReadValue<Vector2>();
 		if (Globals.Controls.Character.Jump.triggered)
 		{
@@ -83,6 +100,11 @@ public class Player : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+		if (Globals.Game.State != GameState.Game)
+		{
+			return;
+		}
+
 		// Move
 		MoveHorizontal();
 

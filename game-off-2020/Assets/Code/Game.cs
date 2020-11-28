@@ -1,6 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameState
+{
+	Menu,
+	Game,
+	End
+}
+
 public class Game : MonoBehaviour
 {
 	private class Flight
@@ -14,6 +21,12 @@ public class Game : MonoBehaviour
 
 		public float PercentRemaining { get { return Mathf.Max(0.0f, MaxTimer - Timer) / MaxTimer; } }
 	}
+
+	[Header("Game State")]
+	[SerializeField] private float _minStateTime = 0.5f;
+	[SerializeField] private int _shiftDuration = 300;
+	[SerializeField] private int _maxDrivableCraft = 15;
+	[SerializeField] private Transform _playerSpawnPoint = null;
 
 	[Header("Spacecraft Arrival")]
 	[SerializeField] private Spacecraft _prefabSpacecraft = null;
@@ -42,55 +55,146 @@ public class Game : MonoBehaviour
 	[SerializeField] private Transform _npcDepartureJumpStartMin = null;
 	[SerializeField] private Transform _npcDepartureJumpStartMax = null;
 
-	private List<Spacecraft> _allDrivableCraft = new List<Spacecraft>();
-	private List<float> _drivableTimers = new List<float>();
+	private List<Spacecraft> _pooledCraft = null;
+	private List<Spacecraft> _allDrivableCraft = null;
+	private List<float> _drivableTimers = null;
 
-	private List<Flight> _arrivals = new List<Flight>();
+	private List<Flight> _arrivals = null;
 	private Vector3 _arrivalStartPos = Vector3.zero;
 	private Vector3 _arrivalEndPos = Vector3.zero;
 
-	private List<Flight> _departures = new List<Flight>();
+	private List<Flight> _departures = null;
 	private float _departureEndHeight = 0.0f;
 	private Collider[] _collidersInDepartArea = new Collider[10];
+
+	private GameState _state = GameState.Menu;
+	private float _stateTimer = 0.0f;
+	private ulong _credits = 0;
+	private float _secondsRemaining = 0.0f;
+	private int _numCraftParked = 0;
+	private int _numCraftReturned = 0;
+
+	public event System.Action<GameState> OnGameStateChanged = null;
 
 	public List<Spacecraft> AllDrivableCraft { get { return _allDrivableCraft; } }
 	public int MaxQueuedArrivals { get { return _maxQueuedArrivals; } }
 	public int MaxQueuedDepartures { get { return _maxQueuedDepartures; } }
+	public GameState State { get { return _state; } }
+	public ulong Credits { get { return _credits; } }
+	public float SecondsRemaining { get { return _secondsRemaining; } }
+	public int NumCraftParked { get { return _numCraftParked; } }
+	public int NumCraftReturned { get { return _numCraftReturned; } }
 
 	private const float TIMER_LOCKED = 1000.0f;
 
 	private void Awake()
 	{
 		Globals.RegisterGame(this);
-		Globals.OnStartDriving -= OnStartDriving;
 		Globals.OnStartDriving += OnStartDriving;
-	}
-
-	private void OnDestroy()
-	{
-		Globals.OnStartDriving -= OnStartDriving;
 	}
 
 	private void Start()
 	{
 		_arrivalStartPos = _markerArrivals.transform.position + 0.5f * _markerArrivals.size.y * Vector3.up;
 		_departureEndHeight = _markerDepartures.transform.position.y + 0.5f * _markerArrivals.size.y;
+
+		_allDrivableCraft = new List<Spacecraft>(_maxDrivableCraft);
+		_drivableTimers = new List<float>(_maxDrivableCraft);
+		_arrivals = new List<Flight>(_maxQueuedArrivals);
+		_departures = new List<Flight>(_maxQueuedDepartures);
+		int numCraft = _maxQueuedArrivals + _maxQueuedDepartures + _maxDrivableCraft;
+		_pooledCraft = new List<Spacecraft>(numCraft);
+		for (int i = 0; i < numCraft; ++i)
+		{
+			MakeNewSpacecraft();
+		}
+
+		ChangeState(GameState.Menu);
 	}
 
-	private void SpawnSpacecraft()
+	private void MakeNewSpacecraft()
 	{
 		Quaternion spawnRot = Quaternion.LookRotation(Vector3.right, Vector3.up);
 		Spacecraft craft = Instantiate(_prefabSpacecraft, _arrivalStartPos, spawnRot, transform);
-		craft.Spawn();
-		craft.DisableCollider();
 		_arrivalEndPos = _markerArrivals.transform.position - (0.5f * _markerArrivals.size.y - craft.HeightWhenDriving) * Vector3.up;
-		craft.enabled = false;
-		Flight flight = new Flight() { Craft = craft, Timer = 0.0f, MaxTimer = Random.Range(_minArrivalTimer, _maxArrivalTimer) };
-		_arrivals.Add(flight);
-		Globals.UIManager.AddSpacecraft(craft, arrival: true);
+		craft.gameObject.SetActive(false);
+		_pooledCraft.Add(craft);
 	}
 
 	private void Update()
+	{
+		_stateTimer += Time.deltaTime;
+		switch (_state)
+		{
+			case GameState.Menu:	UpdateMenu();	break;
+			case GameState.Game:	UpdateGame();	break;
+			case GameState.End:		UpdateEnd();	break;
+		}
+	}
+
+	private void ChangeState(GameState state)
+	{
+		_state = state;
+		_stateTimer = 0.0f;
+
+		// Reset game state
+		if (_state == GameState.Menu)
+		{
+			int count = _arrivals.Count;
+			for (int i = 0; i < count; ++i)
+			{
+				_arrivals[i].Craft.gameObject.SetActive(false);
+				_pooledCraft.Add(_arrivals[i].Craft);
+			}
+			_arrivals.Clear();
+
+			count = _departures.Count;
+			for (int i = 0; i < count; ++i)
+			{
+				_departures[i].Craft.gameObject.SetActive(false);
+				_pooledCraft.Add(_departures[i].Craft);
+			}
+			_departures.Clear();
+
+			count = _allDrivableCraft.Count;
+			for (int i = 0; i < count; ++i)
+			{
+				_allDrivableCraft[i].gameObject.SetActive(false);
+				_pooledCraft.Add(_allDrivableCraft[i]);
+			}
+			_allDrivableCraft.Clear();
+
+			_credits = 0;
+			_secondsRemaining = _shiftDuration + 0.99f;
+			_numCraftParked = 0;
+			_numCraftReturned = 0;
+
+			Globals.Player.transform.position = _playerSpawnPoint.position;
+		}
+
+		if (OnGameStateChanged != null)
+		{
+			OnGameStateChanged(_state);
+		}
+	}
+
+	private void UpdateMenu()
+	{
+		if (_stateTimer >= _minStateTime && Globals.Controls.Character.Jump.triggered)
+		{
+			ChangeState(GameState.Game);
+		}
+	}
+
+	private void UpdateEnd()
+	{
+		if (_stateTimer >= _minStateTime && Globals.Controls.Character.Jump.triggered)
+		{
+			ChangeState(GameState.Menu);
+		}
+	}
+
+	private void UpdateGame()
 	{
 		// PROGRESS DEPARTING CRAFT
 		Vector3 maxDeltaPos = Vector3.up * Time.deltaTime * _departureEndHeight / _departureDuration;
@@ -108,7 +212,8 @@ public class Game : MonoBehaviour
 				if (flight.Craft.transform.position.y >= _departureEndHeight)
 				{
 					flight.CraftMovementComplete = true;
-					Destroy(flight.Craft.gameObject);	// TODO pooling
+					flight.Craft.gameObject.SetActive(false);
+					_pooledCraft.Add(flight.Craft);
 					_departures.RemoveAt(i);
 				}
 			}
@@ -143,7 +248,7 @@ public class Game : MonoBehaviour
 							startAlpha: 0.0f, endAlpha: 1.0f, faceRight: false,
 							onFinished: () => {
 								depart.QueueNextNPCMove = true;
-								Globals.UIManager.AddSpacecraft(craft, arrival: false);
+								Globals.UIManager.StartFlight(craft, arrival: false);
 							});
 
 						if (_departures.Count >= _maxQueuedDepartures)
@@ -187,6 +292,9 @@ public class Game : MonoBehaviour
 					Flight flight = _departures[departIndex];
 					if (flight.QueueNextNPCMove && !flight.NPCJumping && craft.IsEquivalent(flight.Craft))
 					{
+						// Score
+						++_numCraftReturned;
+
 						// Make craft no longer drivable
 						craft.DisableCollider();
 						craft.SetOutlineVisible(false);
@@ -289,6 +397,9 @@ public class Game : MonoBehaviour
 			flight.Craft.NPC.transform.position = _npcArrivalJumpEnd.position;
 			if (flight.QueueNextNPCMove)
 			{
+				// Score
+				++_numCraftParked;
+
 				// Unlock timer so craft's NPC can choose to depart
 				int numDrivable = _allDrivableCraft.Count;
 				for (int drive = 0; drive < numDrivable; ++drive)
@@ -314,9 +425,34 @@ public class Game : MonoBehaviour
 
 
 		// START NEW ARRIVALS
-		if (_arrivals.Count < _maxQueuedArrivals)
+		if (_arrivals.Count < _maxQueuedArrivals
+			&& (_arrivals.Count + _allDrivableCraft.Count) < _maxDrivableCraft)
 		{
-			SpawnSpacecraft();
+			if (_pooledCraft.Count == 0)
+			{
+				MakeNewSpacecraft();
+			}
+			Spacecraft craft = _pooledCraft[_pooledCraft.Count - 1];
+			_pooledCraft.RemoveAt(_pooledCraft.Count - 1);
+			craft.gameObject.SetActive(true);
+			craft.enabled = false;
+
+			Quaternion spawnRot = Quaternion.LookRotation(Vector3.right, Vector3.up);
+			craft.transform.SetPositionAndRotation(_arrivalStartPos, spawnRot);
+			craft.Spawn();
+			craft.DisableCollider();
+
+			Flight flight = new Flight() { Craft = craft, Timer = 0.0f, MaxTimer = Random.Range(_minArrivalTimer, _maxArrivalTimer) };
+			_arrivals.Add(flight);
+			Globals.UIManager.StartFlight(craft, arrival: true);
+		}
+
+
+		// SHIFT TIMER
+		_secondsRemaining = Mathf.Max(0.0f, _secondsRemaining - Time.deltaTime);
+		if (_secondsRemaining <= 0.0f)
+		{
+			ChangeState(GameState.End);
 		}
 	}
 
