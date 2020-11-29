@@ -1,9 +1,6 @@
 
 === TODO
 - Finish environment
-- Gameplay loop
-	- Upon entering an arriving or exiting a departing craft you get a tip based on how much of the timer was left
-		- Spawn tip number that moves upwards and fades, place above spacecraft so you know which one gives what money
 - Game balance
 	- Time between new spawns
 	- Time between arrival and departure
@@ -16,11 +13,18 @@
 - Music
 
 === RELEASE
-- itch page
+- itch page + jam submission
 - Try web build
 - Standalone build(s?)
+- Update repo readme
 - Make repo public
-- Tweet
+- Tweets
+	- Links to itch and github
+	- New things: 2D characters in 3D world, inverted hull outline (copy mesh, expand, reverse triangle winding to turn mesh inside out, tint black), Asset Forge, projectors
+	- Successes: using rendertextures for custom 3D model previews in UI, raycast maths for spacecraft locomotion, some nice feel / polish (buffer jump inputs, spacecraft pitch and roll), enjoyed the process and didn't work too hard or too long
+	- Simplifications: static camera, mostly static UI, uninteractive UI, kenney assets
+	- Missing features: particle effects, sound effects, music
+	- Bugs: {list}
 
 === BUGS
 - Don't seem to be able to give equivalent craft for departures, has to be original instance

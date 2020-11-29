@@ -25,6 +25,10 @@ public class Game : MonoBehaviour
 	[Header("Game State")]
 	[SerializeField] private float _minStateTime = 0.5f;
 	[SerializeField] private int _shiftDuration = 300;
+	[SerializeField] private float _noTimeTipMultiplier = 0.25f;
+	[SerializeField] private float _tipHeightMultiplier = 3.0f;
+	[SerializeField] private int _minTip = 999999;
+	[SerializeField] private int _maxTip = 999999999;
 	[SerializeField] private int _maxDrivableCraft = 15;
 	[SerializeField] private Transform _playerSpawnPoint = null;
 
@@ -294,6 +298,7 @@ public class Game : MonoBehaviour
 					{
 						// Score
 						++_numCraftReturned;
+						AddCredits(flight.PercentRemaining, flight.Craft.NPC.transform.position);
 
 						// Make craft no longer drivable
 						craft.DisableCollider();
@@ -399,6 +404,7 @@ public class Game : MonoBehaviour
 			{
 				// Score
 				++_numCraftParked;
+				AddCredits(flight.PercentRemaining, flight.Craft.NPC.transform.position);
 
 				// Unlock timer so craft's NPC can choose to depart
 				int numDrivable = _allDrivableCraft.Count;
@@ -454,6 +460,16 @@ public class Game : MonoBehaviour
 		{
 			ChangeState(GameState.End);
 		}
+	}
+
+	private void AddCredits(float percentRemaining, Vector3 position)
+	{
+		float tipMultiplier = Mathf.Lerp(_noTimeTipMultiplier, 1.0f, percentRemaining);
+		int tip = Random.Range(_minTip, _maxTip + 1);
+		tip = Mathf.FloorToInt(tip * tipMultiplier);
+		_credits += (ulong)tip;
+		position += _tipHeightMultiplier * Globals.Player.ExitSpacecraftHeight * Vector3.up;
+		Globals.UIManager.AddCredits(tip, position);
 	}
 
 	private void OnStartDriving(Spacecraft craft)

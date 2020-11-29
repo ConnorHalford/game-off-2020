@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-	private class QueuedUI
+	private class QueuedSpacecraftUI
 	{
 		public Spacecraft Craft = null;
 		public float CraftTimerPercentage = 1.0f;
 	}
 
-	private class UIAnim
+	private class SpacecraftUIAnim
 	{
 		public UISpacecraft UI = null;
 		public Spacecraft Craft = null;
@@ -25,9 +25,12 @@ public class UIManager : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI _textArrivals = null;
 	[SerializeField] private TextMeshProUGUI _textDepartures = null;
 	[SerializeField] private TextMeshProUGUI _textHUD = null;
-	[SerializeField] private UISpacecraft PrefabUISpacecraft = null;
+	[SerializeField] private UISpacecraft _prefabUISpacecraft = null;
+	[SerializeField] private TextMeshProUGUI _prefabTextCredits = null;
 	[SerializeField] private float _spacing = 10.0f;
 	[SerializeField] private float _animDuration = 0.3f;
+	[SerializeField] private float _creditsMoveSpeed = 50.0f;
+	[SerializeField] private float _creditsDuration = 0.5f;
 
 	[Header("Menu")]
 	[SerializeField] private GameObject _rootMenu = null;
@@ -38,11 +41,14 @@ public class UIManager : MonoBehaviour
 
 	private UISpacecraft[] _arrivals = null;
 	private UISpacecraft[] _departures = null;
-	private List<QueuedUI> _queuedArrivals = null;
-	private List<QueuedUI> _queuedDepartures = null;
-	private List<UIAnim> _anims = null;
+	private List<QueuedSpacecraftUI> _queuedArrivals = null;
+	private List<QueuedSpacecraftUI> _queuedDepartures = null;
+	private List<SpacecraftUIAnim> _anims = null;
 	private int _numVisibleArrivals = 0;
 	private int _numVisibleDepartures = 0;
+
+	private TextMeshProUGUI[] _credits = null;
+	private float[] _creditsStartTime = null;
 
 	private void Awake()
 	{
@@ -52,14 +58,22 @@ public class UIManager : MonoBehaviour
 	private void Start()
 	{
 		int maxArrivals = Globals.Game.MaxQueuedArrivals;
-		CreatePool(ref _arrivals, maxArrivals, "Arrivals");
-		_queuedArrivals = new List<QueuedUI>(maxArrivals);
+		CreatePool(_prefabUISpacecraft, ref _arrivals, maxArrivals, "Arrivals");
+		_queuedArrivals = new List<QueuedSpacecraftUI>(maxArrivals);
 
 		int maxDepartures = Globals.Game.MaxQueuedDepartures;
-		CreatePool(ref _departures, maxDepartures, "Departures");
-		_queuedDepartures = new List<QueuedUI>(maxDepartures);
+		CreatePool(_prefabUISpacecraft, ref _departures, maxDepartures, "Departures");
+		_queuedDepartures = new List<QueuedSpacecraftUI>(maxDepartures);
 
-		_anims = new List<UIAnim>(maxArrivals + maxDepartures);
+		int maxCredits = 2 * (maxArrivals + maxDepartures);
+		CreatePool(_prefabTextCredits, ref _credits, maxCredits, "CreditsText");
+		_creditsStartTime = new float[maxCredits];
+		for (int i = 0; i < maxCredits; ++i)
+		{
+			_creditsStartTime[i] = -1.0f;
+		}
+
+		_anims = new List<SpacecraftUIAnim>(maxArrivals + maxDepartures);
 
 		Globals.Game.OnGameStateChanged += OnGameStateChanged;
 		OnGameStateChanged(Globals.Game.State);
@@ -87,6 +101,11 @@ public class UIManager : MonoBehaviour
 		{
 			_departures[i].gameObject.SetActive(false);
 		}
+		count = _credits.Length;
+		for (int i = 0; i < count; ++i)
+		{
+			_credits[i].gameObject.SetActive(false);
+		}
 
 		if (state == GameState.End)
 		{
@@ -107,14 +126,14 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
-	private void CreatePool(ref UISpacecraft[] array, int count, string parentName)
+	private void CreatePool<T>(T prefab, ref T[] array, int count, string parentName) where T : UnityEngine.Component
 	{
 		GameObject parent = new GameObject(parentName);
 		parent.transform.SetParent(transform);
-		array = new UISpacecraft[count];
+		array = new T[count];
 		for (int i = 0; i < count; ++i)
 		{
-			array[i] = Instantiate(PrefabUISpacecraft, parent.transform);
+			array[i] = Instantiate(prefab, parent.transform);
 			array[i].gameObject.SetActive(false);
 		}
 	}
@@ -156,13 +175,13 @@ public class UIManager : MonoBehaviour
 		// Pull from queue if any available
 		while (_numVisibleArrivals < _arrivals.Length && _queuedArrivals.Count > 0)
 		{
-			QueuedUI queued = _queuedArrivals[0];
+			QueuedSpacecraftUI queued = _queuedArrivals[0];
 			_queuedArrivals.RemoveAt(0);
 			StartFlight(queued.Craft, arrival: true, queued.CraftTimerPercentage);
 		}
 		while (_numVisibleDepartures < _departures.Length && _queuedDepartures.Count > 0)
 		{
-			QueuedUI queued = _queuedDepartures[0];
+			QueuedSpacecraftUI queued = _queuedDepartures[0];
 			_queuedDepartures.RemoveAt(0);
 			StartFlight(queued.Craft, arrival: false, queued.CraftTimerPercentage);
 		}
@@ -174,9 +193,28 @@ public class UIManager : MonoBehaviour
 		int seconds = Mathf.FloorToInt(secondsRemaining % 60);
 		_textHUD.text = "Credits: Ͼ" + credits.ToString("N0")
 			+ "\nShift remaining: " + minutes.ToString("D2") + ":" + seconds.ToString("D2");
+
+		// Credits text
+		count = _credits.Length;
+		Vector3 deltaPos = Vector3.up * _creditsMoveSpeed * Time.deltaTime;
+		for (int i = 0; i < count; ++i)
+		{
+			if (_creditsStartTime[i] >= 0.0f)
+			{
+				TextMeshProUGUI text = _credits[i];
+				text.transform.position += deltaPos;
+				float duration = Time.time - _creditsStartTime[i];
+				text.alpha = Mathf.Clamp01(1.0f - duration / _creditsDuration);
+				if (text.alpha <= 0.0f)
+				{
+					text.gameObject.SetActive(false);
+					_creditsStartTime[i] = -1.0f;
+				}
+			}
+		}
 	}
 
-	private void ApplyAnim(UIAnim anim)
+	private void ApplyAnim(SpacecraftUIAnim anim)
 	{
 		float width = anim.UI.RectTransform.sizeDelta.x;
 		float startX = -width, endX = 0.0f;
@@ -199,12 +237,30 @@ public class UIManager : MonoBehaviour
 		anim.UI.SetAlphaMultiplier(alpha);
 	}
 
+	public void AddCredits(int credits, Vector3 position)
+	{
+		int count = _credits.Length;
+		for (int i = 0; i < count; ++i)
+		{
+			if (!_credits[i].gameObject.activeInHierarchy)
+			{
+				TextMeshProUGUI text = _credits[i];
+				text.gameObject.SetActive(true);
+				text.transform.position = Globals.Camera.WorldToScreenPoint(position);
+				text.alpha = 1.0f;
+				text.text = "+Ͼ" + credits.ToString("N0");
+				_creditsStartTime[i] = Time.time;
+				break;
+			}
+		}
+	}
+
 	public void StartFlight(Spacecraft craft, bool arrival, float timerPercentage = 1.0f)
 	{
 		// Grab from pool
 		int index = -1;
 		UISpacecraft[] array = arrival ? _arrivals : _departures;
-		List<QueuedUI> queue = arrival ? _queuedArrivals : _queuedDepartures;
+		List<QueuedSpacecraftUI> queue = arrival ? _queuedArrivals : _queuedDepartures;
 		if (queue.Count == 0)
 		{
 			int count = array.Length;
@@ -220,14 +276,14 @@ public class UIManager : MonoBehaviour
 		if (index == -1)
 		{
 			// All occupied, add to queue
-			queue.Add(new QueuedUI() { Craft = craft, CraftTimerPercentage = 1.0f });
+			queue.Add(new QueuedSpacecraftUI() { Craft = craft, CraftTimerPercentage = 1.0f });
 			return;
 		}
 
 		// Setup
 		array[index].gameObject.SetActive(true);
 		array[index].Populate(craft);
-		_anims.Add(new UIAnim() { UI = array[index], Craft = craft, AnimPercentage = 0.0f, Arrival = arrival, Appearing = true });
+		_anims.Add(new SpacecraftUIAnim() { UI = array[index], Craft = craft, AnimPercentage = 0.0f, Arrival = arrival, Appearing = true });
 		ApplyAnim(_anims[_anims.Count - 1]);
 		if (arrival)
 		{
@@ -280,7 +336,7 @@ public class UIManager : MonoBehaviour
 				if (!reversed)
 				{
 					// No existing anim playing so make new one
-					_anims.Add(new UIAnim() { UI = array[i], Craft = craft, AnimPercentage = 0.0f, Arrival = arrival, Appearing = false });
+					_anims.Add(new SpacecraftUIAnim() { UI = array[i], Craft = craft, AnimPercentage = 0.0f, Arrival = arrival, Appearing = false });
 					ApplyAnim(_anims[_anims.Count - 1]);
 				}
 				break;
@@ -304,7 +360,7 @@ public class UIManager : MonoBehaviour
 		}
 		if (!found)
 		{
-			List<QueuedUI> queue = arrival ? _queuedArrivals : _queuedDepartures;
+			List<QueuedSpacecraftUI> queue = arrival ? _queuedArrivals : _queuedDepartures;
 			count = queue.Count;
 			for (int i = 0; i < count; ++i)
 			{

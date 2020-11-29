@@ -4996,9 +4996,12 @@ MonoBehaviour:
   _textArrivals: {fileID: 1313495979}
   _textDepartures: {fileID: 1816727276}
   _textHUD: {fileID: 67083099}
-  PrefabUISpacecraft: {fileID: 4730247707445931570, guid: b1941b1cf783ac042bbe0f64dfd3e24c, type: 3}
+  _prefabUISpacecraft: {fileID: 4730247707445931570, guid: b1941b1cf783ac042bbe0f64dfd3e24c, type: 3}
+  _prefabTextCredits: {fileID: 4533345024240697584, guid: 86fbe11154a4d504489796e4f0e09cbe, type: 3}
   _spacing: 10
   _animDuration: 0.5
+  _creditsMoveSpeed: 50
+  _creditsDuration: 1.5
   _rootMenu: {fileID: 1974244688}
   _rootEnd: {fileID: 2043496765}
   _textEnd: {fileID: 349540951}
@@ -5704,7 +5707,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _minStateTime: 0.5
   _shiftDuration: 60
-  _maxDrivableCraft: 7
+  _noTimeTipMultiplier: 0.02
+  _tipHeightMultiplier: 2
+  _minTip: 1000000
+  _maxTip: 10000000
+  _maxDrivableCraft: 20
   _playerSpawnPoint: {fileID: 1460124712}
   _prefabSpacecraft: {fileID: 7969424803811794856, guid: 577159d353f45784993d335cfeaaba76, type: 3}
   _markerArrivals: {fileID: 1114426183}
