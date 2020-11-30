@@ -1,9 +1,4 @@
 
-=== TODO
-- Finish environment
-- Sound effects
-- Music
-
 === RELEASE
 - itch page + jam submission
 - Try web build
