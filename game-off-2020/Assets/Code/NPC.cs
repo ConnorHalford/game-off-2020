@@ -6,6 +6,8 @@ public class NPC : MonoBehaviour
 
 	private Vector3 _moveFrom = Vector3.zero;
 	private Vector3 _moveTo = Vector3.zero;
+	private Transform _arcTarget = null;
+	private Vector3 _arcOffset = Vector3.zero;
 	private float _moveTimer = -1.0f;
 	private float _moveDuration = 0.0f;
 	private float _alphaStart = 1.0f;
@@ -29,27 +31,39 @@ public class NPC : MonoBehaviour
 		_anim.gameObject.SetActive(false);
 	}
 
-	public void MoveArc(Vector3 from, Vector3 to, float duration, bool faceRight, System.Action onFinished)
+	public void MoveArc(Vector3 from, Transform target, Vector3 offset, float duration, bool faceRight, System.Action onFinished)
 	{
 		Show();
 		_moveFrom = from;
-		_moveTo = to;
+		_arcTarget = target;
+		if (_arcTarget == null)
+		{
+			_moveTo = offset;
+		}
+		_arcOffset = offset;
+		UpdateArcDestination();
 		_anim.SetAlpha(1.0f);
 		_anim.SetFlipX(!faceRight);
 		_moveTimer = 0.0f;
 		_moveDuration = duration;
 		_onMovementFinished = onFinished;
-
-		_arcCenter = 0.5f * (from + to);
-		_arcCenter += Vector3.down;
-		_moveFrom = from - _arcCenter;
-		_moveTo = to - _arcCenter;
 		_linear = false;
+	}
+
+	private void UpdateArcDestination()
+	{
+		if (_arcTarget != null)
+		{
+			_moveTo = _arcTarget.transform.position + _arcOffset;
+		}
+		_arcCenter = 0.5f * (_moveFrom + _moveTo);
+		_arcCenter += Vector3.down;
 	}
 
 	public void MoveLinear(Vector3 from, Vector3 to, float duration, float startAlpha, float endAlpha, bool faceRight, System.Action onFinished)
 	{
 		Show();
+		_arcTarget = null;
 		_anim.PlayWalk();
 		_moveFrom = from;
 		_moveTo = to;
@@ -86,7 +100,8 @@ public class NPC : MonoBehaviour
 		}
 		else
 		{
-			transform.position = _arcCenter + Vector3.Slerp(_moveFrom, _moveTo, t);
+			UpdateArcDestination();
+			transform.position = _arcCenter + Vector3.Slerp(_moveFrom - _arcCenter, _moveTo - _arcCenter, t);
 		}
 
 		if (_moveTimer >= _moveDuration)

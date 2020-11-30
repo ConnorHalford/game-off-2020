@@ -323,8 +323,9 @@ public class Game : MonoBehaviour
 						Globals.UIManager.RemoveSpacecraft(flight.Craft, arrival: false);
 						flight.NPCJumping = true;
 						flight.QueueNextNPCMove = false;
-						Vector3 jumpEndPos = flight.Craft.transform.position + Globals.Player.ExitSpacecraftHeight * Vector3.up;
-						flight.Craft.NPC.MoveArc(flight.Craft.NPC.transform.position, jumpEndPos, _npcJumpDuration, faceRight: false,
+						Vector3 offset = Globals.Player.ExitSpacecraftHeight * Vector3.up;
+						flight.Craft.NPC.MoveArc(flight.Craft.NPC.transform.position, flight.Craft.transform, offset,
+							_npcJumpDuration, faceRight: false,
 							onFinished: () => {
 								flight.QueueNextNPCMove = true;
 								flight.Craft.NPC.Hide();
@@ -390,7 +391,7 @@ public class Game : MonoBehaviour
 				flight.QueueNextNPCMove = false;
 				Vector3 jumpStartPos = flight.Craft.transform.position + Globals.Player.ExitSpacecraftHeight * Vector3.up;
 				flight.Craft.NPC.transform.position = jumpStartPos;
-				flight.Craft.NPC.MoveArc(jumpStartPos, _npcArrivalJumpEnd.position, _npcJumpDuration, faceRight: true,
+				flight.Craft.NPC.MoveArc(jumpStartPos, null, _npcArrivalJumpEnd.position, _npcJumpDuration, faceRight: true,
 					onFinished: () => {
 						flight.NPCJumping = false;
 					});

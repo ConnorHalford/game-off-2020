@@ -1,8 +1,6 @@
 
 === RELEASE
 - itch page + jam submission
-- Try web build
-- Standalone build(s?)
 - Update repo readme
 - Make repo public
 - Tweets
@@ -14,13 +12,11 @@
 	- Bugs: {list}
 
 === BUGS
+- Holding a move input in mid-air towards a wall pins the player to that wall
+- Large invisible corners on environment collision
 - Don't seem to be able to give equivalent craft for departures, has to be original instance
 - Brief shadow flicker when new craft spawned, possibly to do with NPC character shadow projector?
-- Departures fly off at an angle if the craft still has roll
-- NPCs jump to where the craft was when they took it, not where it is (particularly noticeable if you dropoff at speed)
-- Large invisible corners on environment collision
-- Holding a move input in mid-air towards a wall pins the player to that wall
-- Fix spacecraft bobbing while player is standing on it
-- Fix spacecraft freaking out when moving horizontally over ramps
-- Some weirdness when jumping on vehicles on ramps
+- Spacecraft vibrates while player is standing on it
+- Spacecraft pitch forward and backward rapidly when moving horizontally over ramps
+- Sometimes a spacecraft can bump another spacecraft up into the air
 - World-space arrivals/departures text doesn't receive shadows
