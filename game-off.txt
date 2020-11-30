@@ -1,16 +1,4 @@
 
-=== RELEASE
-- itch page + jam submission
-- Update repo readme
-- Make repo public
-- Tweets
-	- Links to itch and github
-	- New things: 2D characters in 3D world, inverted hull outline (copy mesh, expand, reverse triangle winding to turn mesh inside out, tint black), Asset Forge, projectors
-	- Successes: using rendertextures for custom 3D model previews in UI, raycast maths for spacecraft locomotion, some nice feel / polish (buffer jump inputs, spacecraft pitch and roll), enjoyed the process and didn't work too hard or too long
-	- Simplifications: static camera, mostly static UI, uninteractive UI, kenney assets
-	- Missing features: particle effects, sound effects, music
-	- Bugs: {list}
-
 === BUGS
 - Holding a move input in mid-air towards a wall pins the player to that wall
 - Large invisible corners on environment collision
@@ -20,3 +8,5 @@
 - Spacecraft pitch forward and backward rapidly when moving horizontally over ramps
 - Sometimes a spacecraft can bump another spacecraft up into the air
 - World-space arrivals/departures text doesn't receive shadows
+- UI departure animations can go wrong if the resolution of the game is changed at runtime, such as by entering/exiting fullscreen
+- Restarting the game seems to not reset some spacecraft/NPCs correctly sometimes
