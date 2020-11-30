@@ -1,14 +1,6 @@
 
 === TODO
 - Finish environment
-- Game balance
-	- Time between new spawns
-	- Time between arrival and departure
-	- Duration of NPC arrival timer
-	- Duration of NPC departure timer
-	- To increase difficulty over time, reduce all of the above (global multiplier?)
-	- Probably want NPC arrival duration much longer than NPC departure timer, so player can choose to let them wait and give themself breathing room to clear departures
-
 - Sound effects
 - Music
 

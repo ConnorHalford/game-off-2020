@@ -31,6 +31,8 @@ public class Game : MonoBehaviour
 	[SerializeField] private int _maxTip = 999999999;
 	[SerializeField] private int _maxDrivableCraft = 15;
 	[SerializeField] private Transform _playerSpawnPoint = null;
+	[SerializeField] private float _minTimeBetweenArrivals = 3.0f;
+	[SerializeField] private float _maxTimeBetweenArrivals = 10.0f;
 
 	[Header("Spacecraft Arrival")]
 	[SerializeField] private Spacecraft _prefabSpacecraft = null;
@@ -66,6 +68,7 @@ public class Game : MonoBehaviour
 	private List<Flight> _arrivals = null;
 	private Vector3 _arrivalStartPos = Vector3.zero;
 	private Vector3 _arrivalEndPos = Vector3.zero;
+	private float _arrivalTimeout = 0.0f;
 
 	private List<Flight> _departures = null;
 	private float _departureEndHeight = 0.0f;
@@ -431,7 +434,8 @@ public class Game : MonoBehaviour
 
 
 		// START NEW ARRIVALS
-		if (_arrivals.Count < _maxQueuedArrivals
+		_arrivalTimeout = Mathf.Max(0.0f, _arrivalTimeout - Time.deltaTime);
+		if (_arrivalTimeout <= 0.0f && _arrivals.Count < _maxQueuedArrivals
 			&& (_arrivals.Count + _allDrivableCraft.Count) < _maxDrivableCraft)
 		{
 			if (_pooledCraft.Count == 0)
@@ -451,6 +455,8 @@ public class Game : MonoBehaviour
 			Flight flight = new Flight() { Craft = craft, Timer = 0.0f, MaxTimer = Random.Range(_minArrivalTimer, _maxArrivalTimer) };
 			_arrivals.Add(flight);
 			Globals.UIManager.StartFlight(craft, arrival: true);
+
+			_arrivalTimeout = Random.Range(_minTimeBetweenArrivals, _maxTimeBetweenArrivals);
 		}
 
 

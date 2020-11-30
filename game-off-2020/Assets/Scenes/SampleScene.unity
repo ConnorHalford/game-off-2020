@@ -796,7 +796,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_TargetDisplay: 0
 --- !u!224 &188327152
 RectTransform:
@@ -1745,7 +1745,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.3}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 1}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &680934285
@@ -5706,26 +5706,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _minStateTime: 0.5
-  _shiftDuration: 60
+  _shiftDuration: 300
   _noTimeTipMultiplier: 0.02
   _tipHeightMultiplier: 2
   _minTip: 1000000
   _maxTip: 10000000
   _maxDrivableCraft: 20
   _playerSpawnPoint: {fileID: 1460124712}
+  _minTimeBetweenArrivals: 3
+  _maxTimeBetweenArrivals: 10
   _prefabSpacecraft: {fileID: 7969424803811794856, guid: 577159d353f45784993d335cfeaaba76, type: 3}
   _markerArrivals: {fileID: 1114426183}
   _arrivalDuration: 10
-  _minArrivalTimer: 30
-  _maxArrivalTimer: 50
+  _minArrivalTimer: 45
+  _maxArrivalTimer: 75
   _minSpacing: 8
   _maxQueuedArrivals: 5
   _markerDepartures: {fileID: 1829850287}
-  _minTimeBeforeDeparture: 5
-  _maxTimeBeforeDeparture: 5
+  _minTimeBeforeDeparture: 20
+  _maxTimeBeforeDeparture: 50
   _departureDuration: 15
   _minDepartureTimer: 30
-  _maxDepartureTimer: 50
+  _maxDepartureTimer: 60
   _maxQueuedDepartures: 5
   _npcJumpDuration: 1
   _npcMoveDuration: 1
