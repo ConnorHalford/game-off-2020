@@ -1,5 +1,7 @@
-# game-off-2020
-My entry for the [GitHub Game Off 2020](https://itch.io/jam/game-off-2020) game jam.
+# SPACE VALET
+This is my entry for the [GitHub Game Off 2020](https://itch.io/jam/game-off-2020) game jam.  
+Play the game [on itch](https://rhythmlynx.itch.io/space-valet).  
+Check out the [development Twitter thread](https://twitter.com/rhythm_lynx/status/1325124216358834178).  
 
 # Licenses
 The source code and custom assets for this project are provided under the [MIT license](https://github.com/ConnorHalford/game-off-2020/blob/main/LICENSE).
