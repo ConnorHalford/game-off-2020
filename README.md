@@ -17,7 +17,6 @@ This project was created using Unity 2020.1. It depends on the following Unity p
 - [Input System](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/license/LICENSE.html)
 - [Post Processing](https://docs.unity3d.com/Packages/com.unity.postprocessing@3.0/license/LICENSE.html)
 - [TextMeshPro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@3.0/license/LICENSE.html)
-- [Timeline](https://docs.unity3d.com/Packages/com.unity.timeline@1.3/manual/index.html)
 - [Unity UI](https://docs.unity3d.com/Packages/com.unity.ugui@1.0/manual/index.html)
 - [Visual Studio Code Editor](https://docs.unity3d.com/Packages/com.unity.ide.vscode@1.2/manual/index.html), which is available under the [MIT license](https://docs.unity3d.com/Packages/com.unity.ide.vscode@1.2/license/LICENSE.html).
 
